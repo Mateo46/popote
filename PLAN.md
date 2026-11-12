@@ -290,6 +290,11 @@ _Acceptation_ : l'app déployée s'installe sur l'iPhone, on s'y connecte, la se
 
 ### Phase 4 — Recettes : consulter, modifier, noter
 
+🟡 **Livrée le 12/11/2026, en attente du test sur deux téléphones.** Vérifié en réel
+(navigateur, base Supabase) : création, modification, note, commentaire, « Cuisinée
+aujourd'hui », envoi de photo (redimensionnée, bucket privé, couverture automatique),
+suppression avec nettoyage du stockage. 69 tests automatisés.
+
 - `domain/recipe.ts` (types + Zod), couche `data/`, liste, fiche, formulaire d'édition,
   suppression, note en demi-étoiles, commentaire, « Cuisiné aujourd'hui » et historique,
   nutrition, saisie manuelle.

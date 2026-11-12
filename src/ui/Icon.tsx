@@ -35,6 +35,37 @@ const paths = {
   chevron: <path d="M9.5 6l6 6-6 6" />,
   close: <path d="M7 7l10 10M17 7L7 17" />,
   check: <path d="M5 12.5l4.5 4.5L19 7.5" />,
+  more: (
+    <>
+      <circle cx="6" cy="12" r="1.2" />
+      <circle cx="12" cy="12" r="1.2" />
+      <circle cx="18" cy="12" r="1.2" />
+    </>
+  ),
+  camera: (
+    <>
+      <path d="M4 8.5A1.5 1.5 0 015.5 7h2.3l1.5-2h5.4l1.5 2h2.3A1.5 1.5 0 0120 8.5v9a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 17.5z" />
+      <circle cx="12" cy="13" r="3.5" />
+    </>
+  ),
+  pencil: (
+    <>
+      <path d="M15 5l4 4L8.5 19.5H4.5v-4z" />
+      <path d="M13 7l4 4" />
+    </>
+  ),
+  trash: (
+    <>
+      <path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12" />
+      <path d="M10.5 11v5M13.5 11v5" />
+    </>
+  ),
+  external: (
+    <>
+      <path d="M14 4.5h5.5V10M19.5 4.5L11 13" />
+      <path d="M17 14v4.5a1 1 0 01-1 1H5.5a1 1 0 01-1-1V8a1 1 0 011-1H10" />
+    </>
+  ),
 } satisfies Record<string, ReactElement>;
 
 export type IconName = keyof typeof paths;

@@ -42,6 +42,22 @@ Versions stables vérifiées sur npm et nodejs.org le jour de l'initialisation :
 | Zod               | 4.6                         |                                                  |
 | vite-plugin-pwa   | 2.0                         | icônes générées depuis `public/icon.svg`         |
 
+## Données côté app (phase 4)
+
+- **Une seule requête** (`['recipes']`, `src/data/hooks.ts`) charge toutes les recettes
+  avec leurs photos et leur historique. La fiche lit dans ce cache, et la recherche ou
+  « Mon frigo » le feront aussi. Le cache est rechargé au retour au premier plan, ce qui
+  synchronise les deux téléphones.
+- **Note, commentaire et couverture** : mise à jour optimiste (affichage immédiat, retour
+  arrière si le serveur refuse).
+- **Photos** : `<recette>/<photo>.jpg` (1600 px max) et `<recette>/<photo>.thumb.jpg`
+  (400 px) dans le bucket privé `photos`, affichées via des URL signées valables 1 h.
+  Supprimer une recette supprime d'abord ses fichiers, puis la ligne (cascade en base).
+- **Formulaire** (`src/features/recipe-form/draft.ts`) : brouillon en texte, converti et
+  validé à l'enregistrement. Il servira d'écran de relecture pour les imports.
+- **Durée** : le formulaire n'a qu'un champ, enregistré dans `total_minutes`
+  (`prep_minutes` est vidé). L'affichage prend toujours le maximum des deux.
+
 ## Écarts au plan initial
 
 - `recipes.difficulty` est un `smallint` (1 à 3) et non un texte : c'est le format de

@@ -1,0 +1,432 @@
+/* Styles de la fiche recette (tous les blocs de cet écran). Voir mockups/index.html. */
+
+.page {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 112px);
+}
+
+.missing {
+  padding: calc(env(safe-area-inset-top) + 64px) var(--space-4) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  color: var(--color-text-secondary);
+}
+
+.missing a {
+  color: var(--color-accent);
+}
+
+/* ---------- Barre d'outils flottante ---------- */
+.toolbar {
+  position: fixed;
+  z-index: 15;
+  top: calc(env(safe-area-inset-top) + var(--space-2));
+  left: max(var(--space-4), env(safe-area-inset-left));
+  right: max(var(--space-4), env(safe-area-inset-right));
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.toolbar > * {
+  pointer-events: auto;
+}
+
+/* ---------- En-tête ---------- */
+.hero {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 60vh;
+}
+
+.heroSpacer {
+  height: calc(env(safe-area-inset-top) + 64px);
+}
+
+.titleBlock {
+  background: var(--color-surface);
+  padding: var(--space-4) var(--space-4) 0;
+}
+
+.title {
+  font: var(--text-title);
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+.subtitle {
+  margin-top: var(--space-1);
+  font: var(--text-subhead);
+  color: var(--color-text-secondary);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: var(--space-4) 0 0;
+  padding-block: 14px;
+  border-top: 0.5px solid var(--color-separator);
+}
+
+.stats div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--space-1);
+  padding-left: var(--space-3);
+  border-left: 0.5px solid var(--color-separator);
+  min-width: 0;
+}
+
+.stats div:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.stats dt {
+  font: var(--text-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-tertiary);
+}
+
+.stats dd {
+  margin: 0;
+  font: var(--text-stat);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---------- Note, commentaire, « Cuisinée aujourd'hui » ---------- */
+.card {
+  margin-top: var(--space-2);
+  background: var(--color-surface);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.ratingTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font: var(--text-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+}
+
+.ratingValue {
+  font: var(--text-stat);
+  font-variant-numeric: tabular-nums;
+}
+
+.ratingValue small {
+  font: 500 13px/1 var(--font-sans);
+  color: var(--color-text-tertiary);
+}
+
+.comment {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: var(--text-subhead);
+  padding: var(--space-3);
+  background: var(--color-fill);
+  border-radius: var(--radius-s);
+  white-space: pre-line;
+}
+
+.comment small {
+  display: block;
+  margin-top: 6px;
+  font: var(--text-footnote);
+  color: var(--color-text-tertiary);
+}
+
+.addComment {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap-min);
+  color: var(--color-accent);
+  font: var(--text-subhead);
+  width: fit-content;
+}
+
+.commentEditor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.commentEditor textarea {
+  width: 100%;
+  resize: vertical;
+  padding: var(--space-3);
+  border: 0;
+  border-radius: var(--radius-s);
+  background: var(--color-fill);
+  font: var(--text-body);
+}
+
+.commentActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.cooked {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.cooked p {
+  font: var(--text-footnote);
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.error {
+  font: var(--text-footnote);
+  color: var(--color-danger);
+  padding: var(--space-2) var(--space-4) 0;
+}
+
+.card .error {
+  padding: 0;
+}
+
+.description {
+  padding: var(--space-4) var(--space-4) 0;
+  font: var(--text-subhead);
+  color: var(--color-text-secondary);
+}
+
+/* ---------- Sections en listes groupées ---------- */
+.sectionLabel {
+  font: var(--text-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+  padding: var(--space-5) var(--space-4) var(--space-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.sectionLabel em {
+  font: var(--text-footnote);
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-text-tertiary);
+}
+
+.group {
+  margin: 0 var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  font: var(--text-body);
+}
+
+.row + .row::before,
+.step + .step::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--space-4);
+  right: 0;
+  border-top: 0.5px solid var(--color-separator);
+}
+
+.rowMain {
+  flex: 1;
+  min-width: 0;
+  padding-block: 10px;
+}
+
+.rowValue {
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.subRow .rowMain {
+  padding-left: var(--space-3);
+  color: var(--color-text-secondary);
+}
+
+.rowAction {
+  width: var(--tap-min);
+  height: var(--tap-min);
+  margin-right: calc(var(--space-3) * -1);
+  display: grid;
+  place-items: center;
+  color: var(--color-text-tertiary);
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  gap: var(--space-3);
+  padding: 14px var(--space-4);
+  align-items: start;
+}
+
+.step + .step::before {
+  left: 52px;
+}
+
+.stepNumber {
+  font: 600 15px/22px var(--font-rounded);
+  color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.step p {
+  font: var(--text-subhead);
+  line-height: 1.45;
+}
+
+.stepImage {
+  width: 72px;
+  height: 54px;
+  border-radius: 6px;
+}
+
+.note {
+  font: var(--text-footnote);
+  color: var(--color-text-secondary);
+  padding: var(--space-2) var(--space-4) 0;
+}
+
+/* ---------- Photos ---------- */
+.photos {
+  display: flex;
+  gap: var(--space-2);
+  padding: 0 var(--space-4);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.photos::-webkit-scrollbar {
+  display: none;
+}
+
+.photos figure {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.photos figcaption {
+  font: var(--text-footnote);
+  color: var(--color-text-secondary);
+}
+
+.photoButton {
+  border-radius: var(--radius-m);
+  overflow: hidden;
+}
+
+.photoThumb,
+.addPhoto {
+  width: 112px;
+  height: 112px;
+  border-radius: var(--radius-m);
+}
+
+.addPhoto {
+  flex: none;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  border: 1px dashed var(--color-text-tertiary);
+  color: var(--color-text-secondary);
+  font: var(--text-footnote);
+  cursor: pointer;
+}
+
+.addPhoto[aria-busy='true'] {
+  opacity: 0.6;
+}
+
+.addPhoto:focus-within {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Visionneuse plein écran */
+.viewer {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: calc(env(safe-area-inset-top) + 64px) var(--space-4)
+    calc(env(safe-area-inset-bottom) + var(--space-6));
+  border: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.viewer[open] {
+  display: flex;
+}
+
+.viewerClose {
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + var(--space-2));
+  right: var(--space-4);
+}
+
+.viewerImage {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  object-fit: contain;
+  background: transparent;
+  border-radius: var(--radius-m);
+}
+
+.viewerActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.dangerButton {
+  background: var(--color-danger);
+  color: var(--color-on-accent);
+}
+
+.source {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  color: var(--color-accent);
+  padding: var(--space-5) var(--space-4) 0;
+  font: var(--text-subhead);
+}

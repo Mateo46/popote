@@ -1,0 +1,34 @@
+.anchor {
+  position: relative;
+}
+
+.menu {
+  position: absolute;
+  z-index: 1;
+  top: calc(var(--tap-min) + var(--space-2));
+  right: 0;
+  min-width: 240px;
+  border-radius: 20px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu button {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: var(--tap-min);
+  padding: 0 var(--space-3);
+  border-radius: 14px;
+  font: var(--text-body);
+  text-align: left;
+}
+
+.menu button:active {
+  background: var(--glass-selected);
+}
+
+.danger {
+  color: var(--color-danger);
+}

@@ -7,9 +7,9 @@ import styles from './Screen.module.css';
 
 interface ScreenProps {
   title: string;
-  subtitle?: string;
+  subtitle?: string | undefined;
   /** Boutons affichés à droite du titre (par ex. « + »). */
-  actions?: ReactNode;
+  actions?: ReactNode | undefined;
   children: ReactNode;
 }
 

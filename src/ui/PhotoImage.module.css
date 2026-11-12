@@ -1,0 +1,5 @@
+.photo {
+  display: block;
+  object-fit: cover;
+  background: var(--color-fill);
+}

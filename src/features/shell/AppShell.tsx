@@ -17,10 +17,14 @@ export function AppShell() {
     return <Navigate to="/connexion" replace state={{ from: location.pathname }} />;
   }
 
+  // Les écrans de saisie se comportent comme une fenêtre modale : pas de barre d'onglets
+  // (recommandation Apple), pour qu'on ne quitte pas un formulaire par erreur.
+  const isForm = /^\/recettes\/(nouvelle|[^/]+\/modifier)$/.test(location.pathname);
+
   return (
     <>
       <Outlet />
-      <TabBar />
+      {!isForm && <TabBar />}
     </>
   );
 }
