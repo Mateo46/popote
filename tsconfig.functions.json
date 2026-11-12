@@ -1,0 +1,24 @@
+{
+  // Vérifie le typage de l'extracteur HelloFresh (code pur, partagé avec l'Edge Function).
+  // index.ts n'est pas inclus : il utilise l'API Deno, vérifiée au déploiement.
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.functions.tsbuildinfo",
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
+  },
+  "include": [
+    "supabase/functions/import-hellofresh/extract.ts",
+    "supabase/functions/import-hellofresh/extract.test.ts"
+  ]
+}

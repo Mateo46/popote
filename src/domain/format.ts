@@ -21,6 +21,14 @@ export function formatNumber(value: number): string {
   return String(Math.round(value * 10) / 10).replace('.', ',');
 }
 
+/**
+ * Nombre décimal à la française, sans fraction : pour les valeurs mesurées
+ * (nutrition), où « 5½ g » serait incongru. 5,5 → « 5,5 » ; 22,94 → « 22,9 ».
+ */
+export function formatDecimal(value: number): string {
+  return String(Math.round(value * 10) / 10).replace('.', ',');
+}
+
 /** Abréviations et pluriels des unités HelloFresh. */
 const unitLabels: Record<string, { one: string; many: string } | null> = {
   'pièce(s)': null, // « 2 tomates » : l'unité n'apporte rien.

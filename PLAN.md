@@ -323,6 +323,12 @@ _Acceptation_ : recherche instantanée sur 300 recettes de test ; cas de test du
 
 ### Phase 6 — Import par lien (selon décision de la phase 1)
 
+✅ **Terminée le 12/11/2026.** Fonction déployée sur Supabase. 5 vraies recettes
+importées par l'interface (dont un ancien lien redirigé, reconnu comme doublon, et un lien
+collé dans une phrase de partage), avec photo et photos d'étapes copiées dans le stockage.
+Extracteur testé sur fixtures (3 pages `__NEXT_DATA__` + 1 JSON-LD). Appel sans session
+refusé (vérifié avec et sans clé publique).
+
 - Edge Function `import-hellofresh` : exige un utilisateur authentifié ; n'accepte que des
   URL `https://www.hellofresh.fr/…` (refuser tout autre hôte) ; extrait les données
   structurées ; renvoie un brouillon validé par Zod. Erreurs explicites en français.

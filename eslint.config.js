@@ -39,4 +39,9 @@ export default tseslint.config(
     files: ['src/data/**/*.ts'],
     rules: { 'no-restricted-imports': 'off' },
   },
+  {
+    // Edge Functions Supabase : environnement Deno.
+    files: ['supabase/functions/**/*.ts'],
+    languageOptions: { globals: { ...globals.node, Deno: 'readonly' } },
+  },
 );

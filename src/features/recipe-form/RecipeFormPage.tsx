@@ -3,15 +3,24 @@
  * (/recettes/:id/modifier). Barre d'outils en verre : ✕ pour annuler, ✓ pour enregistrer.
  */
 import { useState, type FormEvent } from 'react';
-import { useNavigate, useParams } from 'react-router';
-import { useCreateRecipe, useRecipe, useUpdateRecipe, useUploadPhotos } from '../../data/hooks';
+import { useLocation, useNavigate, useParams } from 'react-router';
+import {
+  useCopyStepImages,
+  useCreateRecipe,
+  useRecipe,
+  useUpdateRecipe,
+  useUploadPhotos,
+} from '../../data/hooks';
+import type { ImportedRecipe } from '../../data/importHellofresh';
 import type { Recipe } from '../../domain/recipe';
 import { strings } from '../../strings';
 import { GlassButton } from '../../ui/GlassButton';
 import { SegmentedControl } from '../../ui/SegmentedControl';
 import {
+  draftFromImport,
   draftFromRecipe,
   draftToInput,
+  newKey,
   emptyDraft,
   emptyIngredient,
   emptyStep,
@@ -39,21 +48,42 @@ export function EditRecipePage() {
   return <RecipeForm recipe={recipe} />;
 }
 
+/**
+ * Écran de création. Après un import HelloFresh, la recette importée arrive dans l'état
+ * de navigation (`state.imported`) : le formulaire sert alors d'écran de relecture.
+ */
 export function NewRecipePage() {
-  return <RecipeForm />;
+  const location = useLocation();
+  const imported = (location.state as { imported?: ImportedRecipe } | null)?.imported;
+  return <RecipeForm imported={imported} />;
 }
 
-function RecipeForm({ recipe }: { recipe?: Recipe }) {
+interface RecipeFormProps {
+  recipe?: Recipe;
+  imported?: ImportedRecipe | undefined;
+}
+
+function RecipeForm({ recipe, imported }: RecipeFormProps) {
   const navigate = useNavigate();
   const create = useCreateRecipe();
   const update = useUpdateRecipe();
   const upload = useUploadPhotos();
-  const [draft, setDraft] = useState<RecipeDraft>(() =>
-    recipe ? draftFromRecipe(recipe) : emptyDraft(),
-  );
-  const [photos, setPhotos] = useState<PendingPhoto[]>([]);
+  const copySteps = useCopyStepImages();
+  const [initial] = useState(() => {
+    if (recipe) return { draft: draftFromRecipe(recipe), meta: recipe, photos: [] };
+    if (imported) {
+      const { draft, meta } = draftFromImport(imported);
+      const photos: PendingPhoto[] = imported.coverImageUrl
+        ? [{ key: newKey(), source: imported.coverImageUrl, kind: 'source' }]
+        : [];
+      return { draft, meta, photos };
+    }
+    return { draft: emptyDraft(), meta: undefined, photos: [] };
+  });
+  const [draft, setDraft] = useState<RecipeDraft>(initial.draft);
+  const [photos, setPhotos] = useState<PendingPhoto[]>(initial.photos);
   const [errors, setErrors] = useState<string[]>([]);
-  const saving = create.isPending || update.isPending || upload.isPending;
+  const saving = create.isPending || update.isPending || upload.isPending || copySteps.isPending;
   const serverError = create.error ?? update.error;
 
   const set = <K extends keyof RecipeDraft>(key: K, value: RecipeDraft[K]) =>
@@ -76,7 +106,7 @@ function RecipeForm({ recipe }: { recipe?: Recipe }) {
   async function handleSubmit(event?: FormEvent) {
     event?.preventDefault();
     if (saving) return;
-    const result = draftToInput(draft, recipe);
+    const result = draftToInput(draft, initial.meta);
     if (!result.ok) {
       setErrors(result.errors);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -98,13 +128,18 @@ function RecipeForm({ recipe }: { recipe?: Recipe }) {
       return;
     }
 
-    // La recette est enregistrée : on envoie ensuite les nouvelles photos.
+    // La recette est enregistrée : on copie ensuite les photos d'étapes importées (un
+    // échec n'est pas bloquant : l'étape reste sans photo), puis les photos de la recette.
+    if (result.stepImageUrls.some(Boolean)) {
+      await copySteps
+        .mutateAsync({ recipeId: id, steps: result.input.steps, urls: result.stepImageUrls })
+        .catch(() => undefined);
+    }
     if (photos.length) {
       try {
         await upload.mutateAsync({
           recipe: { id, coverPhotoId: recipe?.coverPhotoId ?? null },
-          files: photos.map((photo) => photo.file),
-          kind: 'user',
+          photos: photos.map((photo) => ({ source: photo.source, kind: photo.kind })),
         });
       } catch {
         // On ne reste pas sur le formulaire (un nouvel enregistrement créerait un doublon) :
@@ -124,7 +159,11 @@ function RecipeForm({ recipe }: { recipe?: Recipe }) {
       <div className={styles.toolbar}>
         <GlassButton icon="close" label={strings.form.cancel} onClick={() => navigate(-1)} />
         <h1 className={styles.heading}>
-          {recipe ? strings.form.editTitle : strings.form.newTitle}
+          {recipe
+            ? strings.form.editTitle
+            : imported
+              ? strings.form.reviewTitle
+              : strings.form.newTitle}
         </h1>
         <GlassButton
           icon="check"
@@ -135,9 +174,16 @@ function RecipeForm({ recipe }: { recipe?: Recipe }) {
         />
       </div>
 
-      {upload.isPending && (
+      {(upload.isPending || copySteps.isPending) && (
         <p className={styles.progress} role="status">
           {strings.form.savingPhotos}
+        </p>
+      )}
+
+      {imported && (
+        <p className={styles.reviewNote}>
+          {strings.form.reviewNote}
+          {imported.extractedFrom === 'json-ld' && ` ${strings.form.reviewPartial}`}
         </p>
       )}
 
@@ -296,13 +342,17 @@ function RecipeForm({ recipe }: { recipe?: Recipe }) {
         {draft.steps.map((row, index) => (
           <div key={row.key} className={styles.step}>
             <span className={styles.stepNumber}>{index + 1}</span>
-            <textarea
-              aria-label={strings.form.stepPlaceholder(index + 1)}
-              placeholder={strings.form.stepPlaceholder(index + 1)}
-              rows={3}
-              value={row.text}
-              onChange={(e) => updateStep(row.key, { text: e.target.value })}
-            />
+            <div className={styles.stepBody}>
+              <textarea
+                aria-label={strings.form.stepPlaceholder(index + 1)}
+                placeholder={strings.form.stepPlaceholder(index + 1)}
+                rows={3}
+                value={row.text}
+                onChange={(e) => updateStep(row.key, { text: e.target.value })}
+              />
+              {/* Photo d'étape importée : aperçu avant sa copie dans le stockage. */}
+              {row.imageUrl && <img className={styles.stepImage} src={row.imageUrl} alt="" />}
+            </div>
             <button
               type="button"
               className={styles.remove}

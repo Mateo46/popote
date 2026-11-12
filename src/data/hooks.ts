@@ -7,7 +7,9 @@
  * faits sur l'autre téléphone.
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { Photo, Recipe, RecipeInput } from '../domain/recipe';
+import type { Photo, Recipe, RecipeInput, Step } from '../domain/recipe';
+import { fetchRemoteImage } from './images';
+import { importFromHellofresh } from './importHellofresh';
 import * as pantry from './pantry';
 import * as api from './recipes';
 
@@ -101,6 +103,12 @@ export function useDeleteCookEntry() {
   return useMutation({ mutationFn: api.deleteCookEntry, onSettled });
 }
 
+/** Photo à envoyer : un fichier de l'appareil, ou l'adresse d'une image HelloFresh. */
+export interface PhotoUpload {
+  source: Blob | string;
+  kind: Photo['kind'];
+}
+
 /**
  * Envoie une ou plusieurs photos, l'une après l'autre. Si la recette n'a pas encore de
  * couverture, la première photo envoyée le devient.
@@ -110,19 +118,41 @@ export function useUploadPhotos() {
   return useMutation({
     mutationFn: async ({
       recipe,
-      files,
-      kind,
+      photos,
     }: {
       recipe: Pick<Recipe, 'id' | 'coverPhotoId'>;
-      files: Blob[];
-      kind: Photo['kind'];
+      photos: PhotoUpload[];
     }) => {
-      for (const [index, file] of files.entries()) {
-        await api.uploadPhoto(recipe.id, file, kind, index === 0 && !recipe.coverPhotoId);
+      for (const [index, photo] of photos.entries()) {
+        const file =
+          typeof photo.source === 'string' ? await fetchRemoteImage(photo.source) : photo.source;
+        await api.uploadPhoto(recipe.id, file, photo.kind, index === 0 && !recipe.coverPhotoId);
       }
     },
     onSettled,
   });
+}
+
+/** Copie les photos d'étapes d'une recette importée (voir `copyStepImages`). */
+export function useCopyStepImages() {
+  const onSettled = useInvalidate();
+  return useMutation({
+    mutationFn: ({
+      recipeId,
+      steps,
+      urls,
+    }: {
+      recipeId: string;
+      steps: Step[];
+      urls: (string | null)[];
+    }) => api.copyStepImages(recipeId, steps, urls),
+    onSettled,
+  });
+}
+
+/** Import d'une recette par lien hellofresh.fr (aucune écriture : relecture ensuite). */
+export function useImportHellofresh() {
+  return useMutation({ mutationFn: importFromHellofresh });
 }
 
 export function useDeletePhoto() {

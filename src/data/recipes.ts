@@ -14,8 +14,9 @@ import {
   type Photo,
   type Recipe,
   type RecipeInput,
+  type Step,
 } from '../domain/recipe';
-import { prepareImage, thumbPath } from './images';
+import { fetchRemoteImage, prepareImage, prepareSingle, STEP_MAX_SIZE, thumbPath } from './images';
 import { getSupabase } from './supabase';
 
 const PHOTO_BUCKET = 'photos';
@@ -147,8 +148,11 @@ export async function updateRecipe(id: string, input: RecipeInput): Promise<void
 }
 
 /** Supprime la recette, ses lignes liées (cascade) et ses fichiers photo. */
-export async function deleteRecipe(recipe: Pick<Recipe, 'id' | 'photos'>): Promise<void> {
-  const files = recipe.photos.flatMap((photo) => [photo.path, thumbPath(photo.path)]);
+export async function deleteRecipe(recipe: Pick<Recipe, 'id' | 'photos' | 'steps'>): Promise<void> {
+  const files = [
+    ...recipe.photos.flatMap((photo) => [photo.path, thumbPath(photo.path)]),
+    ...recipe.steps.flatMap((step) => (step.image_path ? [step.image_path] : [])),
+  ];
   if (files.length) check(await getSupabase().storage.from(PHOTO_BUCKET).remove(files));
   check(await getSupabase().from('recipes').delete().eq('id', recipe.id));
 }
@@ -221,4 +225,41 @@ export async function signPhotoUrls(paths: string[]): Promise<Record<string, str
     if (item.path && item.signedUrl) urls[item.path] = item.signedUrl;
   }
   return urls;
+}
+
+/**
+ * Copie dans le stockage les photos d'étapes d'une recette importée, puis enregistre
+ * leurs chemins. Une photo indisponible n'empêche pas les autres : l'étape reste
+ * simplement sans photo.
+ *
+ * @param urls une adresse (ou `null`) par étape, dans l'ordre de `steps`
+ * @returns nombre de photos qui n'ont pas pu être copiées
+ */
+export async function copyStepImages(
+  recipeId: string,
+  steps: Step[],
+  urls: (string | null)[],
+): Promise<number> {
+  const bucket = getSupabase().storage.from(PHOTO_BUCKET);
+  let failures = 0;
+  const updated = await Promise.all(
+    steps.map(async (step, index) => {
+      const url = urls[index];
+      if (!url) return step;
+      try {
+        const image = await prepareSingle(await fetchRemoteImage(url), STEP_MAX_SIZE);
+        const path = `${recipeId}/step-${index + 1}-${crypto.randomUUID()}.jpg`;
+        check(await bucket.upload(path, image, { contentType: 'image/jpeg', upsert: false }));
+        return { ...step, image_path: path };
+      } catch (error) {
+        console.warn('Photo d’étape non copiée', url, error);
+        failures += 1;
+        return step;
+      }
+    }),
+  );
+  if (updated.some((step, index) => step !== steps[index])) {
+    check(await getSupabase().from('recipes').update({ steps: updated }).eq('id', recipeId));
+  }
+  return failures;
 }

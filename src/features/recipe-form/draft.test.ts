@@ -31,8 +31,8 @@ function filled(patch: Partial<RecipeDraft> = {}): RecipeDraft {
       { key: 'c', quantity: '½', unit: 'sachet(s)', name: 'Épices', shipped: false },
     ],
     steps: [
-      { key: 's1', text: 'Préchauffez le four.', imagePath: null },
-      { key: 's2', text: '   ', imagePath: null },
+      { key: 's1', text: 'Préchauffez le four.', imagePath: null, imageUrl: null },
+      { key: 's2', text: '   ', imagePath: null, imageUrl: null },
     ],
     ...patch,
   };

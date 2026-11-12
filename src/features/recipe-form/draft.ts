@@ -2,12 +2,14 @@
  * Brouillon du formulaire de recette : tout est en texte, comme dans les champs, puis
  * converti et validé en `RecipeInput` à l'enregistrement.
  *
- * Ce module servira aussi d'écran de relecture pour les imports (lien HelloFresh, scan).
+ * Le même formulaire sert de relecture pour les imports (lien HelloFresh, puis scan).
  */
+import type { ImportedRecipe } from '../../data/importHellofresh';
 import { ingredientKey } from '../../domain/ingredients';
 import {
   ingredientSchema,
   stepSchema,
+  type Ingredient,
   type NutrientKey,
   type Recipe,
   type RecipeInput,
@@ -37,8 +39,17 @@ export interface IngredientDraft {
 export interface StepDraft {
   key: string;
   text: string;
+  /** Photo déjà dans le stockage. */
   imagePath: string | null;
+  /** Photo d'étape importée, encore sur le site HelloFresh (copiée à l'enregistrement). */
+  imageUrl: string | null;
 }
+
+/** Données d'origine conservées telles quelles (non modifiables dans le formulaire). */
+export type RecipeMeta = Pick<
+  Recipe,
+  'source' | 'sourceUrl' | 'hellofreshId' | 'allergens' | 'utensils'
+>;
 
 export interface RecipeDraft {
   title: string;
@@ -66,7 +77,12 @@ export const emptyIngredient = (): IngredientDraft => ({
   shipped: null,
 });
 
-export const emptyStep = (): StepDraft => ({ key: newKey(), text: '', imagePath: null });
+export const emptyStep = (): StepDraft => ({
+  key: newKey(),
+  text: '',
+  imagePath: null,
+  imageUrl: null,
+});
 
 const emptyNutrition = () =>
   Object.fromEntries(nutrientKeys.map((key) => [key, ''])) as Record<NutrientKey, string>;
@@ -90,20 +106,34 @@ export function emptyDraft(): RecipeDraft {
 const numberText = (value: number | null | undefined) =>
   value === null || value === undefined ? '' : String(value).replace('.', ',');
 
-export function draftFromRecipe(recipe: Recipe): RecipeDraft {
-  const minutes = Math.max(recipe.prepMinutes ?? 0, recipe.totalMinutes ?? 0);
+/** Champs communs à une recette enregistrée et à une recette importée. */
+interface DraftSource {
+  title: string;
+  subtitle: string | null;
+  description: string | null;
+  prepMinutes: number | null;
+  totalMinutes: number | null;
+  difficulty: 1 | 2 | 3 | null;
+  servings: number | null;
+  tags: string[];
+  ingredients: Pick<Ingredient, 'name' | 'quantity' | 'unit' | 'shipped'>[];
+  nutrition: Partial<Record<NutrientKey | 'serving_grams', number | null | undefined>> | null;
+}
+
+function draftFrom(source: DraftSource, steps: StepDraft[]): RecipeDraft {
+  const minutes = Math.max(source.prepMinutes ?? 0, source.totalMinutes ?? 0);
   const nutrition = emptyNutrition();
-  for (const key of nutrientKeys) nutrition[key] = numberText(recipe.nutrition?.[key]);
+  for (const key of nutrientKeys) nutrition[key] = numberText(source.nutrition?.[key]);
   return {
-    title: recipe.title,
-    subtitle: recipe.subtitle ?? '',
-    description: recipe.description ?? '',
+    title: source.title,
+    subtitle: source.subtitle ?? '',
+    description: source.description ?? '',
     minutes: minutes ? String(minutes) : '',
-    servings: numberText(recipe.servings),
-    difficulty: recipe.difficulty ? (String(recipe.difficulty) as '1' | '2' | '3') : '',
-    tags: recipe.tags.join(', '),
-    ingredients: recipe.ingredients.length
-      ? recipe.ingredients.map((ingredient) => ({
+    servings: numberText(source.servings),
+    difficulty: source.difficulty ? (String(source.difficulty) as '1' | '2' | '3') : '',
+    tags: source.tags.join(', '),
+    ingredients: source.ingredients.length
+      ? source.ingredients.map((ingredient) => ({
           key: newKey(),
           // « selon le goût » est stocké en unité avec une quantité nulle (format HelloFresh).
           quantity: ingredient.quantity
@@ -114,11 +144,46 @@ export function draftFromRecipe(recipe: Recipe): RecipeDraft {
           shipped: ingredient.shipped,
         }))
       : [emptyIngredient()],
-    steps: recipe.steps.length
-      ? recipe.steps.map((step) => ({ key: newKey(), text: step.text, imagePath: step.image_path }))
-      : [emptyStep()],
+    steps: steps.length ? steps : [emptyStep()],
     nutrition,
-    servingGrams: numberText(recipe.nutrition?.serving_grams),
+    servingGrams: numberText(source.nutrition?.serving_grams),
+  };
+}
+
+export function draftFromRecipe(recipe: Recipe): RecipeDraft {
+  return draftFrom(
+    recipe,
+    recipe.steps.map((step) => ({
+      key: newKey(),
+      text: step.text,
+      imagePath: step.image_path,
+      imageUrl: null,
+    })),
+  );
+}
+
+/** Recette importée de HelloFresh → brouillon à relire, et données d'origine à conserver. */
+export function draftFromImport(imported: ImportedRecipe): {
+  draft: RecipeDraft;
+  meta: RecipeMeta;
+} {
+  return {
+    draft: draftFrom(
+      imported,
+      imported.steps.map((step) => ({
+        key: newKey(),
+        text: step.text,
+        imagePath: null,
+        imageUrl: step.imageUrl,
+      })),
+    ),
+    meta: {
+      source: 'hellofresh',
+      sourceUrl: imported.sourceUrl,
+      hellofreshId: imported.hellofreshId,
+      allergens: imported.allergens,
+      utensils: imported.utensils,
+    },
   };
 }
 
@@ -144,13 +209,20 @@ export function parseAmount(text: string): number | null {
   return /^\d+(\.\d+)?$/.test(value) ? Number(value) : NaN;
 }
 
-export type DraftResult = { ok: true; input: RecipeInput } | { ok: false; errors: string[] };
+export type DraftResult =
+  | {
+      ok: true;
+      input: RecipeInput;
+      /** Photo d'étape importée à copier, alignée sur `input.steps` (`null` sinon). */
+      stepImageUrls: (string | null)[];
+    }
+  | { ok: false; errors: string[] };
 
 /**
  * Convertit le brouillon. Les lignes d'ingrédient et d'étape vides sont ignorées.
  * `base` : recette modifiée, dont on conserve la source et les données importées.
  */
-export function draftToInput(draft: RecipeDraft, base?: Recipe): DraftResult {
+export function draftToInput(draft: RecipeDraft, base?: RecipeMeta): DraftResult {
   const errors: string[] = [];
 
   const title = draft.title.trim();
@@ -186,9 +258,10 @@ export function draftToInput(draft: RecipeDraft, base?: Recipe): DraftResult {
       });
     });
 
-  const steps = draft.steps
-    .filter((row) => row.text.trim())
-    .map((row) => stepSchema.parse({ text: row.text.trim(), image_path: row.imagePath }));
+  const stepRows = draft.steps.filter((row) => row.text.trim());
+  const steps = stepRows.map((row) =>
+    stepSchema.parse({ text: row.text.trim(), image_path: row.imagePath }),
+  );
 
   const nutrition: Partial<Record<NutrientKey | 'serving_grams', number>> = {};
   for (const key of [...nutrientKeys, 'serving_grams'] as const) {
@@ -208,6 +281,7 @@ export function draftToInput(draft: RecipeDraft, base?: Recipe): DraftResult {
 
   return {
     ok: true,
+    stepImageUrls: stepRows.map((row) => (row.imagePath ? null : row.imageUrl)),
     input: {
       title,
       subtitle: draft.subtitle.trim() || null,

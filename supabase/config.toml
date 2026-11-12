@@ -1,0 +1,7 @@
+# Configuration Supabase CLI (utilisée pour déployer les Edge Functions).
+# Le projet distant est désigné par --project-ref au déploiement (voir README).
+project_id = "popote"
+
+[functions.import-hellofresh]
+# Appel réservé aux utilisateurs connectés : la plateforme vérifie le jeton de session.
+verify_jwt = true

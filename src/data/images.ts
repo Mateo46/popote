@@ -55,6 +55,24 @@ function encode(image: HTMLImageElement, max: number): Promise<Blob> {
   );
 }
 
+/** Taille des photos d'étapes (affichées petites dans la fiche). */
+export const STEP_MAX_SIZE = 800;
+
+/** Une seule version réduite de l'image (photos d'étapes : pas de vignette). */
+export async function prepareSingle(file: Blob, max: number): Promise<Blob> {
+  return encode(await loadImage(file), max);
+}
+
+/**
+ * Télécharge une image d'un autre site (CDN HelloFresh, qui autorise ces requêtes)
+ * pour la copier dans notre stockage.
+ */
+export async function fetchRemoteImage(url: string): Promise<Blob> {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Image indisponible (${response.status}).`);
+  return response.blob();
+}
+
 /** Produit la photo (1600 px) et sa vignette (400 px) à partir d'un fichier ou d'un blob. */
 export async function prepareImage(file: Blob): Promise<{ photo: Blob; thumb: Blob }> {
   const image = await loadImage(file);

@@ -76,6 +76,31 @@ Versions stables vérifiées sur npm et nodejs.org le jour de l'initialisation :
 - **Données** : `pantry_items` (frigo) et `pantry_staples` (basiques) sont communs au
   foyer. Les recherches récentes restent propres à chaque appareil (stockage local).
 
+## Import par lien (phase 6)
+
+```
+App ──(lien, jeton de session)──▶ Edge Function import-hellofresh ──▶ www.hellofresh.fr
+  ▲                                   │ extract.ts : __NEXT_DATA__, sinon JSON-LD
+  └──────── { recipe } ◀──────────────┘
+App : relecture (formulaire) → enregistrement → copie des images du CDN HelloFresh
+      (CORS autorisé) vers le bucket « photos » : couverture (kind « source ») et étapes.
+```
+
+- **Pourquoi une fonction serveur** : le navigateur ne peut pas lire les pages
+  hellofresh.fr (CORS). Les images, elles, sont lisibles directement (`img.hellofresh.com`
+  répond `Access-Control-Allow-Origin: *`).
+- **Sécurité** : la vérification automatique du jeton (`verify_jwt`) **laisse passer** un
+  appel fait avec la seule clé publique (constaté le 12/11/2026 avec les nouvelles clés
+  `sb_publishable_…`). La fonction vérifie donc elle-même la session auprès de
+  `/auth/v1/user`. Toute nouvelle fonction doit faire de même.
+- **Hôte verrouillé** : seules les adresses `https://www.hellofresh.fr/recipes/…` sont
+  suivies, redirections comprises (pas de relais vers un autre site).
+- **Doublons** : contrôlés avant l'import (identifiant dans le lien), puis après (la page
+  finale peut être une autre recette), et en base (`hellofresh_id` et `source_url`
+  uniques).
+- **Échecs partiels** : une photo d'étape introuvable n'empêche pas l'enregistrement.
+  L'étape reste sans photo.
+
 ## Écarts au plan initial
 
 - `recipes.difficulty` est un `smallint` (1 à 3) et non un texte : c'est le format de

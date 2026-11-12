@@ -13,9 +13,11 @@ import { PhotoImage } from '../../ui/PhotoImage';
 import { newKey } from './draft';
 import styles from './PhotoPicker.module.css';
 
+/** Photo choisie mais pas encore envoyée : fichier de l'appareil ou image HelloFresh. */
 export interface PendingPhoto {
   key: string;
-  file: File;
+  source: File | string;
+  kind: Photo['kind'];
 }
 
 interface PhotoPickerProps {
@@ -30,15 +32,28 @@ export function PhotoPicker({ existing, pending, onChange, disabled }: PhotoPick
 
   // Aperçus locaux des fichiers choisis ; libérés quand la liste change ou à la sortie.
   const previews = useMemo(
-    () => pending.map((photo) => ({ ...photo, url: URL.createObjectURL(photo.file) })),
+    () =>
+      pending.map((photo) => ({
+        ...photo,
+        url: typeof photo.source === 'string' ? photo.source : URL.createObjectURL(photo.source),
+      })),
     [pending],
   );
-  useEffect(() => () => previews.forEach((photo) => URL.revokeObjectURL(photo.url)), [previews]);
+  useEffect(
+    () => () =>
+      previews.forEach((photo) => {
+        if (typeof photo.source !== 'string') URL.revokeObjectURL(photo.url);
+      }),
+    [previews],
+  );
 
   function handleFiles(event: ChangeEvent<HTMLInputElement>) {
     const files = [...(event.target.files ?? [])];
     event.target.value = ''; // Permet de choisir à nouveau le même fichier.
-    onChange([...pending, ...files.map((file) => ({ key: newKey(), file }))]);
+    onChange([
+      ...pending,
+      ...files.map((file) => ({ key: newKey(), source: file, kind: 'user' as const })),
+    ]);
   }
 
   return (

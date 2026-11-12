@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   daysSince,
+  formatDecimal,
   formatDaysAgo,
   formatLongDate,
   formatMinutes,
@@ -63,4 +64,12 @@ describe('dates', () => {
 
   it('écrit la date longue avec majuscule', () =>
     expect(formatLongDate('2026-10-18')).toBe('Dimanche 18 octobre 2026'));
+});
+
+describe('formatDecimal', () => {
+  it('écrit les valeurs nutritionnelles en décimales, sans fraction', () => {
+    expect(formatDecimal(5.5)).toBe('5,5');
+    expect(formatDecimal(22.94)).toBe('22,9');
+    expect(formatDecimal(941)).toBe('941');
+  });
 });

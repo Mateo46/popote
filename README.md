@@ -78,6 +78,27 @@ Sécurité : seul un utilisateur connecté peut lire ou écrire (RLS). La clé p
 (`anon` / `publishable`) peut figurer dans l'app ; la clé `service_role` / `secret`
 **ne doit jamais** être versionnée ni envoyée au navigateur.
 
+## Fonction d'import HelloFresh (Edge Function)
+
+L'import par lien passe par `supabase/functions/import-hellofresh/` : `index.ts` (serveur
+Deno : vérifie l'adresse, suit les redirections sans quitter hellofresh.fr) et
+`extract.ts` (lecture de la page, logique pure testée avec Vitest sur les fixtures).
+
+Déployer après chaque modification de ces fichiers :
+
+```bash
+npx supabase login
+npx supabase functions deploy import-hellofresh --project-ref <id-du-projet> --use-api
+```
+
+L'appel est réservé aux utilisateurs connectés (`verify_jwt = true` dans
+`supabase/config.toml`). Journaux : Supabase > Edge Functions > import-hellofresh > Logs.
+
+Si HelloFresh change son site, l'import peut échouer ou tomber sur le JSON-LD (données
+partielles, signalées dans l'écran de relecture). Enregistrer alors une nouvelle page en
+fixture (sans les textes des étapes, le dépôt étant public), adapter `extract.ts`, lancer
+`npm test`, puis redéployer.
+
 ## Déploiement (GitHub Pages)
 
 Automatique à chaque push sur `main` ([deploy.yml](.github/workflows/deploy.yml)).

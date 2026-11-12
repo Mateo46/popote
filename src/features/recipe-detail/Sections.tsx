@@ -1,6 +1,6 @@
 /** Sections de la fiche recette : ingrédients, étapes, nutrition, historique. */
 import { useDeleteCookEntry } from '../../data/hooks';
-import { formatLongDate, formatNumber, formatQuantity } from '../../domain/format';
+import { formatDecimal, formatLongDate, formatQuantity } from '../../domain/format';
 import { splitIngredients, type NutrientKey, type Recipe, type Step } from '../../domain/recipe';
 import { strings } from '../../strings';
 import { Icon } from '../../ui/Icon';
@@ -102,7 +102,7 @@ export function NutritionSection({ recipe }: { recipe: Recipe }) {
           <li key={key} className={sub ? `${styles.row} ${styles.subRow}` : styles.row}>
             <span className={styles.rowMain}>{strings.nutrients[key]}</span>
             <span className={styles.rowValue}>
-              {formatNumber(nutrition[key] ?? 0)} {unit}
+              {formatDecimal(nutrition[key] ?? 0)} {unit}
             </span>
           </li>
         ))}

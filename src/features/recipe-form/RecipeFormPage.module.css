@@ -215,6 +215,29 @@
   padding: var(--space-3) var(--space-2) var(--space-3) var(--space-4);
 }
 
+.stepBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.stepImage {
+  width: 96px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.reviewNote {
+  margin: var(--space-2) var(--space-4) 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-m);
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+  font: var(--text-subhead);
+}
+
 .stepNumber {
   font: 600 15px/24px var(--font-rounded);
   color: var(--color-accent);

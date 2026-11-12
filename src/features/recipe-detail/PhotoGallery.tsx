@@ -33,7 +33,9 @@ export function PhotoGallery({ recipe, urls }: PhotoGalleryProps) {
   function handleFiles(event: ChangeEvent<HTMLInputElement>) {
     const files = [...(event.target.files ?? [])];
     event.target.value = ''; // Permet de choisir à nouveau le même fichier.
-    if (files.length) upload.mutate({ recipe, files, kind: 'user' });
+    if (files.length) {
+      upload.mutate({ recipe, photos: files.map((file) => ({ source: file, kind: 'user' })) });
+    }
   }
 
   return (

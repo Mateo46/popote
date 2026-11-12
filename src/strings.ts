@@ -41,6 +41,24 @@ export const strings = {
     neverCooked: 'Jamais cuisinée',
   },
 
+  add: {
+    title: 'Ajouter une recette',
+    close: 'Fermer',
+    linkTitle: 'Lien HelloFresh',
+    linkBody: 'Photo, ingrédients, étapes et nutrition, sans rien retaper',
+    linkLabel: 'Lien de la recette sur hellofresh.fr',
+    linkPlaceholder: 'hellofresh.fr/recipes/…',
+    paste: 'Coller',
+    import: 'Importer',
+    importing: 'Import…',
+    noLink: 'Collez le lien d’une recette hellofresh.fr.',
+    manualTitle: 'Saisie manuelle',
+    manualBody: 'Pour une recette qui ne vient pas de HelloFresh',
+    duplicate: (title: string) => `« ${title} » est déjà dans vos recettes.`,
+    openExisting: 'Ouvrir la recette',
+    pasteDenied: 'Impossible de lire le presse-papiers : collez le lien dans le champ.',
+  },
+
   detail: {
     back: 'Retour',
     more: 'Plus d’actions',
@@ -105,6 +123,11 @@ export const strings = {
   form: {
     newTitle: 'Nouvelle recette',
     editTitle: 'Modifier',
+    reviewTitle: 'Vérifier',
+    reviewNote:
+      'Recette importée de hellofresh.fr. Relisez puis enregistrez : la photo et les photos des étapes seront copiées dans vos recettes.',
+    reviewPartial:
+      'Certaines informations (difficulté, tags, photos des étapes) n’ont pas pu être lues.',
     cancel: 'Annuler',
     save: 'Enregistrer',
     saving: 'Enregistrement…',
