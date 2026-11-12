@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import type { Recipe } from '../../domain/recipe';
-import { draftFromRecipe, draftToInput, emptyDraft, parseAmount, type RecipeDraft } from './draft';
+import {
+  draftFromRecipe,
+  draftFromScan,
+  draftToInput,
+  emptyDraft,
+  parseAmount,
+  type RecipeDraft,
+} from './draft';
 
 describe('parseAmount', () => {
   it.each([
@@ -26,9 +33,23 @@ function filled(patch: Partial<RecipeDraft> = {}): RecipeDraft {
     title: '  Bavette et beurre aux fines herbes ',
     minutes: '35',
     ingredients: [
-      { key: 'a', quantity: '240', unit: 'g', name: 'Bavette de bœuf', shipped: null },
-      { key: 'b', quantity: '', unit: '', name: '', shipped: null },
-      { key: 'c', quantity: '½', unit: 'sachet(s)', name: 'Épices', shipped: false },
+      {
+        key: 'a',
+        quantity: '240',
+        unit: 'g',
+        name: 'Bavette de bœuf',
+        shipped: null,
+        suspicious: false,
+      },
+      { key: 'b', quantity: '', unit: '', name: '', shipped: null, suspicious: false },
+      {
+        key: 'c',
+        quantity: '½',
+        unit: 'sachet(s)',
+        name: 'Épices',
+        shipped: false,
+        suspicious: false,
+      },
     ],
     steps: [
       { key: 's1', text: 'Préchauffez le four.', imagePath: null, imageUrl: null },
@@ -55,7 +76,13 @@ describe('draftToInput', () => {
         unit: 'g',
         shipped: null,
       },
-      { name: 'Épices', normalized: 'epice', quantity: 0.5, unit: 'sachet(s)', shipped: false },
+      {
+        name: 'Épices',
+        normalized: 'epice',
+        quantity: 0.5,
+        unit: 'sachet(s)',
+        shipped: false,
+      },
     ]);
     expect(result.input.steps).toEqual([{ text: 'Préchauffez le four.', image_path: null }]);
     expect(result.input.nutrition).toBeNull();
@@ -65,7 +92,9 @@ describe('draftToInput', () => {
     const result = draftToInput(
       filled({
         title: ' ',
-        ingredients: [{ key: 'a', quantity: 'un peu', unit: '', name: 'Sel', shipped: null }],
+        ingredients: [
+          { key: 'a', quantity: 'un peu', unit: '', name: 'Sel', shipped: null, suspicious: false },
+        ],
       }),
     );
     expect(result).toEqual({
@@ -125,5 +154,27 @@ describe('draftFromRecipe', () => {
     expect(draft.ingredients[0]?.quantity).toBe('0,5');
     expect(draft.nutrition.salt).toBe('6,1');
     expect(draft.steps).toHaveLength(1);
+  });
+});
+
+describe('draftFromScan', () => {
+  it('reprend le feuillet lu, signale les lignes douteuses et marque la source « scan »', () => {
+    const { draft, meta } = draftFromScan({
+      title: 'Bò bún',
+      subtitle: 'avec des nouilles',
+      minutes: 45,
+      ingredients: [
+        { name: 'Sauce po1sson', quantity: 1, unit: 'sachet', shipped: true, suspicious: true },
+        { name: 'Carotte', quantity: 1, unit: null, shipped: true, suspicious: false },
+      ],
+      steps: ['Faites cuire les nouilles.'],
+      nutrition: { kcal: 586 },
+      allergens: ['poisson'],
+    });
+    expect(draft.title).toBe('Bò bún');
+    expect(draft.minutes).toBe('45');
+    expect(draft.ingredients.map((row) => row.suspicious)).toEqual([true, false]);
+    expect(draft.nutrition.kcal).toBe('586');
+    expect(meta).toMatchObject({ source: 'scan', allergens: ['poisson'] });
   });
 });

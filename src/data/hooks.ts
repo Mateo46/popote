@@ -111,7 +111,7 @@ export interface PhotoUpload {
 
 /**
  * Envoie une ou plusieurs photos, l'une après l'autre. Si la recette n'a pas encore de
- * couverture, la première photo envoyée le devient.
+ * couverture, la première photo du plat envoyée le devient (pas une photo de feuillet).
  */
 export function useUploadPhotos() {
   const onSettled = useInvalidate();
@@ -123,10 +123,14 @@ export function useUploadPhotos() {
       recipe: Pick<Recipe, 'id' | 'coverPhotoId'>;
       photos: PhotoUpload[];
     }) => {
-      for (const [index, photo] of photos.entries()) {
+      // La couverture est la première photo du plat (site ou perso), jamais un feuillet.
+      let hasCover = recipe.coverPhotoId !== null;
+      for (const photo of photos) {
         const file =
           typeof photo.source === 'string' ? await fetchRemoteImage(photo.source) : photo.source;
-        await api.uploadPhoto(recipe.id, file, photo.kind, index === 0 && !recipe.coverPhotoId);
+        const makeCover = !hasCover && photo.kind !== 'scan';
+        await api.uploadPhoto(recipe.id, file, photo.kind, makeCover);
+        hasCover ||= makeCover;
       }
     },
     onSettled,

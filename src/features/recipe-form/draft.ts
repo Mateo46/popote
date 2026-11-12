@@ -5,6 +5,7 @@
  * Le même formulaire sert de relecture pour les imports (lien HelloFresh, puis scan).
  */
 import type { ImportedRecipe } from '../../data/importHellofresh';
+import type { ParsedScan } from '../../domain/parseOcr';
 import { ingredientKey } from '../../domain/ingredients';
 import {
   ingredientSchema,
@@ -34,6 +35,8 @@ export interface IngredientDraft {
   name: string;
   /** `false` = à avoir chez soi ; `true` = livré ; `null` = non précisé. */
   shipped: boolean | null;
+  /** Ligne lue par l'OCR et probablement mal reconnue : signalée « à vérifier ». */
+  suspicious: boolean;
 }
 
 export interface StepDraft {
@@ -75,6 +78,7 @@ export const emptyIngredient = (): IngredientDraft => ({
   unit: '',
   name: '',
   shipped: null,
+  suspicious: false,
 });
 
 export const emptyStep = (): StepDraft => ({
@@ -106,7 +110,7 @@ export function emptyDraft(): RecipeDraft {
 const numberText = (value: number | null | undefined) =>
   value === null || value === undefined ? '' : String(value).replace('.', ',');
 
-/** Champs communs à une recette enregistrée et à une recette importée. */
+/** Champs communs à une recette enregistrée, importée ou scannée. */
 interface DraftSource {
   title: string;
   subtitle: string | null;
@@ -142,6 +146,7 @@ function draftFrom(source: DraftSource, steps: StepDraft[]): RecipeDraft {
           unit: ingredient.unit ?? '',
           name: ingredient.name,
           shipped: ingredient.shipped,
+          suspicious: false,
         }))
       : [emptyIngredient()],
     steps: steps.length ? steps : [emptyStep()],
@@ -300,6 +305,39 @@ export function draftToInput(draft: RecipeDraft, base?: RecipeMeta): DraftResult
       ingredients,
       steps,
       nutrition: Object.keys(nutrition).length ? nutrition : null,
+    },
+  };
+}
+
+/** Feuillet lu par l'OCR → brouillon à relire (lignes douteuses signalées). */
+export function draftFromScan(scan: ParsedScan): { draft: RecipeDraft; meta: RecipeMeta } {
+  const draft = draftFrom(
+    {
+      title: scan.title ?? '',
+      subtitle: scan.subtitle,
+      description: null,
+      prepMinutes: null,
+      totalMinutes: scan.minutes,
+      difficulty: null,
+      servings: 2,
+      tags: [],
+      ingredients: scan.ingredients,
+      nutrition: scan.nutrition,
+    },
+    scan.steps.map((text) => ({ key: newKey(), text, imagePath: null, imageUrl: null })),
+  );
+  draft.ingredients = draft.ingredients.map((row, index) => ({
+    ...row,
+    suspicious: scan.ingredients[index]?.suspicious ?? false,
+  }));
+  return {
+    draft,
+    meta: {
+      source: 'scan',
+      sourceUrl: null,
+      hellofreshId: null,
+      allergens: scan.allergens,
+      utensils: [],
     },
   };
 }

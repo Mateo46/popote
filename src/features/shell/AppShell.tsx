@@ -19,7 +19,7 @@ export function AppShell() {
 
   // Pas de barre d'onglets sur les écrans de saisie, qui se comportent comme une fenêtre
   // modale (recommandation Apple), ni sur la recherche, qui affiche sa propre barre.
-  const isForm = /^\/recettes\/(nouvelle|[^/]+\/modifier)$/.test(location.pathname);
+  const isForm = /^\/recettes\/(nouvelle|scanner|[^/]+\/modifier)$/.test(location.pathname);
   const isSearch = location.pathname.startsWith('/recherche');
 
   return (

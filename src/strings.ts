@@ -52,11 +52,50 @@ export const strings = {
     import: 'Importer',
     importing: 'Import…',
     noLink: 'Collez le lien d’une recette hellofresh.fr.',
+    scanTitle: 'Scanner un feuillet',
+    scanBody: 'Photographiez le recto puis le verso de la fiche papier',
     manualTitle: 'Saisie manuelle',
     manualBody: 'Pour une recette qui ne vient pas de HelloFresh',
     duplicate: (title: string) => `« ${title} » est déjà dans vos recettes.`,
     openExisting: 'Ouvrir la recette',
     pasteDenied: 'Impossible de lire le presse-papiers : collez le lien dans le champ.',
+  },
+
+  scan: {
+    title: 'Scanner un feuillet',
+    back: 'Annuler le scan',
+    intro:
+      'Photographiez la fiche à plat, bien éclairée, sans reflet. La lecture se fait sur votre téléphone : aucune image n’est envoyée ailleurs.',
+    front: 'Recto',
+    backSide: 'Verso',
+    frontHint: 'Titre et ingrédients',
+    backHint: 'Étapes (facultatif)',
+    take: 'Choisir une photo',
+    replace: 'Remplacer',
+    remove: (side: string) => `Retirer la photo du ${side.toLowerCase()}`,
+    read: 'Lire le feuillet',
+    loading: 'Préparation de la lecture… (la première fois peut prendre quelques secondes)',
+    reading: (percent: number) => `Lecture en cours… ${percent} %`,
+    cancel: 'Annuler',
+    failed:
+      'La lecture a échoué. Réessayez avec une photo plus nette, ou utilisez la saisie manuelle.',
+    nothing: 'Aucun texte n’a été reconnu. Reprenez la photo de plus près, bien à plat.',
+    startFailed:
+      'La lecture n’a pas pu démarrer. Au premier scan, une connexion internet est nécessaire pour préparer le moteur (environ 5 Mo).',
+  },
+
+  review: {
+    recognized: (title: string) => `Recette reconnue : « ${title} ».`,
+    unrecognized: 'Le titre n’a pas été reconnu.',
+    suggestLink: 'Retrouvez-la sur HelloFresh pour un import sans erreur.',
+    searchHellofresh: 'Chercher sur HelloFresh',
+    pasteLink: 'Coller le lien',
+    linkLabel: 'Lien de la recette sur hellofresh.fr',
+    importLink: 'Importer',
+    importing: 'Import…',
+    toCheck: (n: number) => (n === 1 ? '1 ligne à vérifier' : `${n} lignes à vérifier`),
+    flag: 'À vérifier',
+    rawText: 'Texte reconnu par la lecture',
   },
 
   detail: {
@@ -134,6 +173,8 @@ export const strings = {
     general: 'Recette',
     photos: 'Photos',
     photosHintNew: 'La première photo devient la couverture.',
+    photosHintScan:
+      'La photo du feuillet est gardée avec la recette. Ajoutez une photo du plat pour la couverture.',
     photosHintEdit: 'Les photos déjà enregistrées se gèrent depuis la fiche de la recette.',
     addPhotos: 'Ajouter',
     removePhoto: 'Retirer cette photo',

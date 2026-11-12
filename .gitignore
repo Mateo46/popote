@@ -25,3 +25,9 @@ supabase/.branches
 
 # Configuration locale de Claude Code
 .claude/
+
+# Fichiers OCR copiés depuis node_modules (scripts/copy-ocr-assets.mjs)
+public/ocr/
+
+# Photos de feuillets fournies pour régler l'OCR (données personnelles, non publiées)
+scans-test/

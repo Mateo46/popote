@@ -340,6 +340,13 @@ sur des pages enregistrées en fixtures.
 
 ### Phase 7 — Scan du feuillet
 
+🟡 **Livrée le 12/11/2026, à régler sur de vrais feuillets.** Tesseract.js 7 auto-hébergé
+(moteur LSTM + modèle `fra` compact, ~4,5 Mo, chargés au premier scan puis en cache),
+prétraitement, progression, annulation, délai maximal au démarrage. `parseOcr.ts` testé
+sur des textes OCR de synthèse. Vérifié dans le navigateur sur une fiche générée :
+lecture en ~4 s, relecture pré-remplie, aucun recours à un CDN. **Reste** : mesurer temps
+et taux de correction sur de vrais feuillets, sur iPhone, et ajuster les règles.
+
 - Tesseract.js chargé à la demande (jamais au démarrage), modèle `fra` servi par l'app et
   mis en cache ; prétraitement de l'image (redimensionnement, niveaux de gris, contraste) ;
   indicateur de progression ; annulation possible.

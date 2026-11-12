@@ -21,7 +21,8 @@ export function fitWithin(width: number, height: number, max: number) {
   return { width: Math.round(width * scale), height: Math.round(height * scale) };
 }
 
-function loadImage(blob: Blob): Promise<HTMLImageElement> {
+/** Décode une image (orientation EXIF appliquée par le navigateur). */
+export function loadImage(blob: Blob): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(blob);
     const image = new Image();

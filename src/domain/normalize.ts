@@ -10,7 +10,7 @@ export function normalizeName(name: string): string {
     name
       .normalize('NFD')
       // Retire les accents (diacritiques combinants) après décomposition.
-      .replace(/[̀-ͯ]/g, '')
+      .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
       .replace(/œ/g, 'oe')
       .replace(/æ/g, 'ae')

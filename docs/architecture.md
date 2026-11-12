@@ -101,6 +101,32 @@ App : relecture (formulaire) → enregistrement → copie des images du CDN Hell
 - **Échecs partiels** : une photo d'étape introuvable n'empêche pas l'enregistrement.
   L'étape reste sans photo.
 
+## Scan des feuillets (phase 7)
+
+```
+Photos (recto, verso) → preprocess (2400 px, gris, contraste) → Tesseract.js (Web Worker)
+  → texte + mots peu sûrs → parseOcr (domaine pur) → formulaire « Vérifier »
+     ├─ « Chercher sur HelloFresh » : ouvre la recherche du site avec le titre reconnu
+     └─ « Coller le lien » : import par lien (phase 6), photos du feuillet conservées
+```
+
+- **Auto-hébergé** : `scripts/copy-ocr-assets.mjs` copie dans `public/ocr/` (non versionné)
+  le worker, les variantes LSTM du moteur WebAssembly et le modèle français « best_int ».
+  Aucune image ne quitte l'appareil. Le service worker ne les précharge pas (≈ 4,5 Mo) mais
+  les garde en cache au premier scan (`runtimeCaching` dans `vite.config.ts`).
+- **Chargement à la demande** : `import('tesseract.js')` uniquement quand on lance une
+  lecture ; démarrage borné à 60 s et annulable.
+- **Analyse** (`src/domain/parseOcr.ts`) : sections repérées par leurs intitulés
+  (« Ingrédients », « À ajouter vous-même », « Valeurs nutritionnelles », « Allergènes »),
+  colonnes par nombre de personnes (on garde celle de 2), étapes numérotées. Corrections
+  automatiques des confusions fréquentes (« 1OO » → 100, « 1% » → 1½). Les lignes douteuses
+  sont signalées « À vérifier » dans le formulaire ; le texte brut reste consultable.
+- **Photos du feuillet** : enregistrées avec la recette (`kind = 'scan'`), jamais choisies
+  comme couverture automatiquement.
+- **Réglage** : déposer des photos de vrais feuillets dans `scans-test/` (non versionné),
+  ajouter le texte OCR obtenu en cas de test dans `parseOcr.test.ts`, puis ajuster les
+  règles.
+
 ## Écarts au plan initial
 
 - `recipes.difficulty` est un `smallint` (1 à 3) et non un texte : c'est le format de

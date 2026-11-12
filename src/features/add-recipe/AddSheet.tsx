@@ -1,6 +1,6 @@
 /**
  * Feuille « Ajouter une recette », ouverte par le « + » de l'écran Recettes :
- * lien HelloFresh (import puis relecture) ou saisie manuelle.
+ * lien HelloFresh (import puis relecture), scan d'un feuillet ou saisie manuelle.
  *
  * Feuille flottante en Liquid Glass (élément natif <dialog>, détente moyenne).
  */
@@ -179,6 +179,24 @@ export function AddSheet({ open, onClose }: AddSheetProps) {
           </div>
         )}
       </form>
+
+      <button
+        type="button"
+        className={`${styles.option} ${styles.manual}`}
+        onClick={() => {
+          close();
+          navigate('/recettes/scanner');
+        }}
+      >
+        <span className={styles.icon}>
+          <Icon name="camera" />
+        </span>
+        <span className={styles.text}>
+          <b>{strings.add.scanTitle}</b>
+          <span>{strings.add.scanBody}</span>
+        </span>
+        <Icon name="chevron" size={16} />
+      </button>
 
       <button
         type="button"

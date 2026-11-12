@@ -60,6 +60,12 @@ const paths = {
       <path d="M10.5 11v5M13.5 11v5" />
     </>
   ),
+  paste: (
+    <>
+      <rect x="6" y="5" width="12" height="15" rx="2" />
+      <path d="M9.5 5V3.5h5V5M9.5 10h5M9.5 13.5h5" />
+    </>
+  ),
   external: (
     <>
       <path d="M14 4.5h5.5V10M19.5 4.5L11 13" />
