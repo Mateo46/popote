@@ -87,6 +87,8 @@ export const strings = {
     removeEntry: 'Retirer cette date',
     source: 'Voir sur hellofresh.fr',
     actionError: 'L’enregistrement a échoué. Vérifiez la connexion internet.',
+    photoUploadFailed:
+      'La recette est enregistrée, mais l’envoi des photos a échoué. Ajoutez-les à nouveau ci-dessous.',
   },
 
   nutrients: {
@@ -107,6 +109,12 @@ export const strings = {
     save: 'Enregistrer',
     saving: 'Enregistrement…',
     general: 'Recette',
+    photos: 'Photos',
+    photosHintNew: 'La première photo devient la couverture.',
+    photosHintEdit: 'Les photos déjà enregistrées se gèrent depuis la fiche de la recette.',
+    addPhotos: 'Ajouter',
+    removePhoto: 'Retirer cette photo',
+    savingPhotos: 'Envoi des photos…',
     title: 'Titre',
     subtitle: 'Sous-titre',
     description: 'Description',

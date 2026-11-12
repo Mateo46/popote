@@ -4,7 +4,7 @@
  */
 import { useState, type FormEvent } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { useCreateRecipe, useRecipe, useUpdateRecipe } from '../../data/hooks';
+import { useCreateRecipe, useRecipe, useUpdateRecipe, useUploadPhotos } from '../../data/hooks';
 import type { Recipe } from '../../domain/recipe';
 import { strings } from '../../strings';
 import { GlassButton } from '../../ui/GlassButton';
@@ -20,6 +20,7 @@ import {
   type RecipeDraft,
   type StepDraft,
 } from './draft';
+import { PhotoPicker, type PendingPhoto } from './PhotoPicker';
 import styles from './RecipeFormPage.module.css';
 
 const difficultyOptions = [
@@ -46,11 +47,13 @@ function RecipeForm({ recipe }: { recipe?: Recipe }) {
   const navigate = useNavigate();
   const create = useCreateRecipe();
   const update = useUpdateRecipe();
+  const upload = useUploadPhotos();
   const [draft, setDraft] = useState<RecipeDraft>(() =>
     recipe ? draftFromRecipe(recipe) : emptyDraft(),
   );
+  const [photos, setPhotos] = useState<PendingPhoto[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
-  const saving = create.isPending || update.isPending;
+  const saving = create.isPending || update.isPending || upload.isPending;
   const serverError = create.error ?? update.error;
 
   const set = <K extends keyof RecipeDraft>(key: K, value: RecipeDraft[K]) =>
@@ -70,8 +73,9 @@ function RecipeForm({ recipe }: { recipe?: Recipe }) {
     );
   }
 
-  function handleSubmit(event?: FormEvent) {
+  async function handleSubmit(event?: FormEvent) {
     event?.preventDefault();
+    if (saving) return;
     const result = draftToInput(draft, recipe);
     if (!result.ok) {
       setErrors(result.errors);
@@ -79,17 +83,43 @@ function RecipeForm({ recipe }: { recipe?: Recipe }) {
       return;
     }
     setErrors([]);
-    if (recipe) {
-      update.mutate({ id: recipe.id, input: result.input }, { onSuccess: () => navigate(-1) });
-    } else {
-      create.mutate(result.input, {
-        onSuccess: (id) => navigate(`/recettes/${id}`, { replace: true }),
-      });
+
+    let id: string;
+    try {
+      if (recipe) {
+        await update.mutateAsync({ id: recipe.id, input: result.input });
+        id = recipe.id;
+      } else {
+        id = await create.mutateAsync(result.input);
+      }
+    } catch {
+      // L'erreur est affichée en haut du formulaire (serverError) : on reste ici.
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
     }
+
+    // La recette est enregistrée : on envoie ensuite les nouvelles photos.
+    if (photos.length) {
+      try {
+        await upload.mutateAsync({
+          recipe: { id, coverPhotoId: recipe?.coverPhotoId ?? null },
+          files: photos.map((photo) => photo.file),
+          kind: 'user',
+        });
+      } catch {
+        // On ne reste pas sur le formulaire (un nouvel enregistrement créerait un doublon) :
+        // la fiche signale l'échec et permet de réessayer.
+        navigate(`/recettes/${id}`, { replace: true, state: { photoUploadFailed: true } });
+        return;
+      }
+    }
+
+    if (recipe) navigate(-1);
+    else navigate(`/recettes/${id}`, { replace: true });
   }
 
   return (
-    <form className={styles.page} onSubmit={handleSubmit} noValidate>
+    <form className={styles.page} onSubmit={(event) => void handleSubmit(event)} noValidate>
       <div className={styles.edge} aria-hidden="true" />
       <div className={styles.toolbar}>
         <GlassButton icon="close" label={strings.form.cancel} onClick={() => navigate(-1)} />
@@ -101,9 +131,15 @@ function RecipeForm({ recipe }: { recipe?: Recipe }) {
           tint
           label={saving ? strings.form.saving : strings.form.save}
           disabled={saving}
-          onClick={() => handleSubmit()}
+          onClick={() => void handleSubmit()}
         />
       </div>
+
+      {upload.isPending && (
+        <p className={styles.progress} role="status">
+          {strings.form.savingPhotos}
+        </p>
+      )}
 
       {(errors.length > 0 || serverError) && (
         <div className={styles.errors} role="alert">
@@ -116,6 +152,17 @@ function RecipeForm({ recipe }: { recipe?: Recipe }) {
           </ul>
         </div>
       )}
+
+      <h2 className={styles.label}>{strings.form.photos}</h2>
+      <PhotoPicker
+        existing={recipe?.photos ?? []}
+        pending={photos}
+        onChange={setPhotos}
+        disabled={saving}
+      />
+      <p className={styles.hint}>
+        {recipe?.photos.length ? strings.form.photosHintEdit : strings.form.photosHintNew}
+      </p>
 
       <h2 className={styles.label}>{strings.form.general}</h2>
       <div className={styles.group}>

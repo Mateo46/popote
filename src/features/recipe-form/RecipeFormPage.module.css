@@ -51,6 +51,18 @@
   list-style: disc;
 }
 
+.progress {
+  margin: var(--space-2) var(--space-4) 0;
+  font: var(--text-subhead);
+  color: var(--color-accent);
+}
+
+.hint {
+  padding: var(--space-2) var(--space-4) 0;
+  font: var(--text-footnote);
+  color: var(--color-text-secondary);
+}
+
 .label {
   font: var(--text-caption);
   text-transform: uppercase;

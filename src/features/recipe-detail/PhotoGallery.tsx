@@ -3,6 +3,7 @@
  * photothèque, et visionneuse pour choisir la couverture ou supprimer une photo.
  */
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
+import { useLocation } from 'react-router';
 import { useDeletePhoto, usePhotoUrls, useSetCover, useUploadPhotos } from '../../data/hooks';
 import { thumbPath } from '../../data/images';
 import { coverPhoto, type Photo, type Recipe } from '../../domain/recipe';
@@ -22,6 +23,11 @@ interface PhotoGalleryProps {
 export function PhotoGallery({ recipe, urls }: PhotoGalleryProps) {
   const upload = useUploadPhotos();
   const [selected, setSelected] = useState<Photo | null>(null);
+  // Posé par le formulaire quand la recette est enregistrée mais pas ses photos.
+  const location = useLocation();
+  const formUploadFailed =
+    (location.state as { photoUploadFailed?: boolean } | null)?.photoUploadFailed === true &&
+    !upload.isSuccess;
   const cover = coverPhoto(recipe);
 
   function handleFiles(event: ChangeEvent<HTMLInputElement>) {
@@ -65,6 +71,11 @@ export function PhotoGallery({ recipe, urls }: PhotoGalleryProps) {
           {upload.isPending ? strings.detail.uploading : strings.detail.addPhoto}
         </label>
       </div>
+      {formUploadFailed && !upload.isError && (
+        <p className={styles.error} role="alert">
+          {strings.detail.photoUploadFailed}
+        </p>
+      )}
       {upload.isError && (
         <p className={styles.error} role="alert">
           {upload.error.message || strings.detail.actionError}
