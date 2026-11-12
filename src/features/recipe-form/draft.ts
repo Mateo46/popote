@@ -4,7 +4,7 @@
  *
  * Ce module servira aussi d'écran de relecture pour les imports (lien HelloFresh, scan).
  */
-import { normalizeName } from '../../domain/normalize';
+import { ingredientKey } from '../../domain/ingredients';
 import {
   ingredientSchema,
   stepSchema,
@@ -179,7 +179,7 @@ export function draftToInput(draft: RecipeDraft, base?: Recipe): DraftResult {
       }
       return ingredientSchema.parse({
         name: row.name.trim() || '?',
-        normalized: normalizeName(row.name),
+        normalized: ingredientKey(row.name),
         quantity: quantity === null || Number.isNaN(quantity) ? null : quantity,
         unit: row.unit.trim() || null,
         shipped: row.shipped,

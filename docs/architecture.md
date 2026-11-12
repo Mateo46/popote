@@ -58,6 +58,24 @@ Versions stables vérifiées sur npm et nodejs.org le jour de l'initialisation :
 - **Durée** : le formulaire n'a qu'un champ, enregistré dans `total_minutes`
   (`prep_minutes` est vidé). L'affichage prend toujours le maximum des deux.
 
+## Recherche et « Mon frigo » (phase 5)
+
+- **Clé d'ingrédient** (`src/domain/ingredients.ts`) : nom sans accents, au singulier,
+  sans qualificatifs (« frais », « haché », « en poudre »…), avec une table de synonymes
+  (« gousse d'ail » → « ail », « blanc de poulet » → « poulet »). Pour ajouter un
+  synonyme : une ligne dans `synonyms`, plus un cas dans `ingredients.test.ts`.
+- Les clés sont **recalculées à partir des libellés** à chaque utilisation : modifier ces
+  règles ne demande aucune migration (la colonne `normalized` n'est qu'indicative).
+- **Correspondance** : un ingrédient du frigo couvre celui de la recette si la clé est
+  identique ou si celle de la recette commence par elle (« persil » couvre « persil
+  plat »). Volontairement strict : « riz » ne couvre pas « nouilles de riz ».
+- **Score** : possédés / requis, hors basiques. « Poivre et sel » est découpé en deux.
+- **Recherche** : chaque mot doit commencer un mot du titre, du sous-titre, d'un
+  ingrédient ou d'un tag. Les mots de chaque recette sont indexés une fois (cache
+  `WeakMap`), d'où une recherche instantanée à chaque frappe.
+- **Données** : `pantry_items` (frigo) et `pantry_staples` (basiques) sont communs au
+  foyer. Les recherches récentes restent propres à chaque appareil (stockage local).
+
 ## Écarts au plan initial
 
 - `recipes.difficulty` est un `smallint` (1 à 3) et non un texte : c'est le format de

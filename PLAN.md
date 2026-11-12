@@ -307,6 +307,13 @@ l'autre après retour au premier plan ; tests unitaires des schémas.
 
 ### Phase 5 — Recherche et Mon frigo
 
+✅ **Terminée le 12/11/2026.** Rapprochement des ingrédients dans `domain/ingredients.ts`
+(singulier, qualificatifs, synonymes), `search.ts` avec index en cache, `pantryMatch.ts`.
+Tests verts : accents, pluriels, synonymes, basiques exclus, œufs comptés, recherche sur
+300 recettes en moins de 50 ms. Vérifié en réel : recherche, ajout et retrait dans le
+frigo commun, écran des basiques. Les résultats sur de vraies recettes seront à revoir
+après les imports (phases 6 et 8).
+
 - `normalize.ts`, `search.ts`, `pantryMatch.ts` en logique pure, avec tests couvrant
   accents, pluriels, synonymes, basiques exclus, œufs **non** exclus.
 - Interface de recherche, tris, filtres ; écran Mon frigo.

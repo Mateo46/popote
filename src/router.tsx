@@ -12,6 +12,7 @@ import { EditRecipePage, NewRecipePage } from './features/recipe-form/RecipeForm
 import { RecipesPage } from './features/recipes/RecipesPage';
 import { SearchPage } from './features/search/SearchPage';
 import { SettingsPage } from './features/settings/SettingsPage';
+import { StaplesPage } from './features/settings/StaplesPage';
 import { AppShell } from './features/shell/AppShell';
 import { NotFoundPage } from './features/shell/NotFoundPage';
 
@@ -28,6 +29,7 @@ export const router = createBrowserRouter(
         { path: 'frigo', element: <PantryPage /> },
         { path: 'recherche', element: <SearchPage /> },
         { path: 'reglages', element: <SettingsPage /> },
+        { path: 'reglages/basiques', element: <StaplesPage /> },
         { path: '*', element: <NotFoundPage /> },
       ],
     },

@@ -1,0 +1,157 @@
+.chips {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding: var(--space-1) var(--space-4) var(--space-3);
+  scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex: none;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius-full);
+  background: var(--color-fill);
+  font: var(--text-footnote);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color var(--duration);
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--color-text);
+  color: var(--color-surface);
+}
+
+.label {
+  font: var(--text-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+  padding: var(--space-4) var(--space-4) var(--space-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.label em {
+  font: var(--text-footnote);
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-text-tertiary);
+}
+
+.clearRecent {
+  font: var(--text-footnote);
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-accent);
+}
+
+.group {
+  margin: 0 var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+}
+
+.group li + li {
+  border-top: 0.5px solid var(--color-separator);
+  margin-left: var(--space-4);
+}
+
+.recent {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font: var(--text-body);
+  text-align: left;
+}
+
+.group li + li .recent {
+  padding-left: 0;
+}
+
+.recent svg {
+  color: var(--color-text-tertiary);
+}
+
+.empty {
+  margin: var(--space-6) var(--space-4) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font: var(--text-subhead);
+  color: var(--color-text-secondary);
+}
+
+/* Barre du bas : rond « retour aux recettes » + champ de recherche, en Liquid Glass. */
+.bar {
+  position: fixed;
+  z-index: 20;
+  left: max(var(--space-4), env(safe-area-inset-left));
+  right: max(var(--space-4), env(safe-area-inset-right));
+  bottom: max(var(--space-4), calc(env(safe-area-inset-bottom) - 8px));
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  transition: transform var(--duration);
+}
+
+.mini {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: var(--color-text);
+}
+
+.field {
+  flex: 1;
+  min-width: 0;
+  height: 50px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-2) 0 var(--space-4);
+  color: var(--color-text-secondary);
+}
+
+.field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  outline: none;
+  /* 16 px minimum : en dessous, Safari iOS zoome à la saisie. */
+  font: var(--text-body);
+  color: var(--color-text);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Le champ affiche sa propre croix d'effacement. */
+.field input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.clear {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+}

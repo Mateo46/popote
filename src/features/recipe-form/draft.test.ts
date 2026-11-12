@@ -55,7 +55,7 @@ describe('draftToInput', () => {
         unit: 'g',
         shipped: null,
       },
-      { name: 'Épices', normalized: 'epices', quantity: 0.5, unit: 'sachet(s)', shipped: false },
+      { name: 'Épices', normalized: 'epice', quantity: 0.5, unit: 'sachet(s)', shipped: false },
     ]);
     expect(result.input.steps).toEqual([{ text: 'Préchauffez le four.', image_path: null }]);
     expect(result.input.nutrition).toBeNull();

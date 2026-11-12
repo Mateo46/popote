@@ -1,0 +1,6 @@
+.mark {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  border-radius: 3px;
+  padding: 0 2px;
+}

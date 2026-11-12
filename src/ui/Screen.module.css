@@ -17,6 +17,10 @@
   pointer-events: none;
 }
 
+.back {
+  padding: 0 var(--space-4);
+}
+
 .head {
   display: flex;
   align-items: flex-end;

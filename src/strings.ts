@@ -142,12 +142,60 @@ export const strings = {
   pantry: {
     title: 'Mon frigo',
     subtitle: 'Ce que vous avez sous la main',
-    emptyBody: 'Indiquez vos ingrédients pour voir les recettes qui vous correspondent.',
+    emptyBody: 'Ajoutez les ingrédients que vous avez pour voir les recettes possibles.',
+    inputLabel: 'Ajouter un ingrédient au frigo',
+    placeholder: 'Ajouter…',
+    remove: (label: string) => `Retirer ${label}`,
+    clear: 'Tout retirer',
+    suggestions: 'Suggestions',
+    /** « Beurre, eau, farine… sont toujours comptés » : minuscules sauf la première lettre. */
+    staplesNote: (list: string) => {
+      const text = list.toLowerCase();
+      return `${text.charAt(0).toUpperCase()}${text.slice(1)} sont toujours comptés comme disponibles.`;
+    },
+    staplesEdit: 'Modifier',
+    results: 'Les plus proches',
+    outOf: (n: number) => `sur ${n} recette${n > 1 ? 's' : ''}`,
+    noMatch: 'Aucune recette n’utilise ces ingrédients.',
+    missing: 'Manque : ',
+    more: (n: number) => ` +${n}`,
+    complete: 'Vous avez tout',
+    score: (owned: number, required: number) =>
+      `${owned} ingrédient${owned > 1 ? 's' : ''} sur ${required}`,
+  },
+
+  staples: {
+    title: 'Toujours disponibles',
+    intro:
+      'Ces ingrédients ne comptent jamais comme manquants dans « Mon frigo ». La liste est commune au foyer.',
+    back: 'Retour aux réglages',
+    add: 'Ajouter',
+    inputLabel: 'Nouvel ingrédient toujours disponible',
+    placeholder: 'Par exemple : moutarde',
+    remove: (label: string) => `Retirer ${label}`,
+    count: (n: number) => (n === 1 ? '1 ingrédient' : `${n} ingrédients`),
   },
 
   search: {
     title: 'Rechercher',
     emptyBody: 'Cherchez par titre, ingrédient ou tag.',
+    placeholder: 'Recette, ingrédient, tag…',
+    fieldLabel: 'Rechercher une recette',
+    clear: 'Effacer la recherche',
+    backToRecipes: 'Revenir aux recettes',
+    filtersLabel: 'Filtres',
+    minRating: 'Note ≥ 4',
+    maxMinutes: '≤ 30 min',
+    neverCooked: 'Jamais cuisinée',
+    notRated: 'Non notée',
+    results: 'Résultats',
+    count: (n: number) => (n === 1 ? '1 recette' : `${n} recettes`),
+    noResults: 'Aucune recette ne correspond.',
+    removeFilters: 'Retirer les filtres',
+    recent: 'Recherches récentes',
+    clearRecent: 'Effacer',
+    inIngredient: 'Ingrédient : ',
+    inTag: 'Tag : ',
   },
 
   settings: {
@@ -156,6 +204,7 @@ export const strings = {
     themeSystem: 'Système',
     themeLight: 'Clair',
     themeDark: 'Sombre',
+    pantry: 'Mon frigo',
     account: 'Compte',
     signOut: 'Se déconnecter',
     version: (version: string) => `${appName} · version ${version}`,

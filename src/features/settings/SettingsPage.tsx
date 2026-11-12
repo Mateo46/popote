@@ -1,7 +1,10 @@
-/** Onglet Réglages : apparence, compte et version. Le reste arrive avec les phases suivantes. */
+/** Onglet Réglages : apparence, basiques de « Mon frigo », compte et version. */
+import { Link } from 'react-router';
 import { signOut, useAuth } from '../../data/auth';
+import { usePantryEntries } from '../../data/hooks';
 import { strings } from '../../strings';
 import { Group, Row } from '../../ui/Group';
+import { Icon } from '../../ui/Icon';
 import { Screen } from '../../ui/Screen';
 import { SegmentedControl } from '../../ui/SegmentedControl';
 import { setThemePreference, useThemePreference, type ThemePreference } from '../../ui/theme';
@@ -16,6 +19,7 @@ const themeOptions: { value: ThemePreference; label: string }[] = [
 export function SettingsPage() {
   const auth = useAuth();
   const theme = useThemePreference();
+  const { data: staples } = usePantryEntries('pantry_staples');
 
   return (
     <Screen title={strings.settings.title}>
@@ -30,6 +34,16 @@ export function SettingsPage() {
           />
         </div>
       </section>
+
+      <Group label={strings.settings.pantry}>
+        <Link to="/reglages/basiques" className={styles.linkRow}>
+          <span>{strings.staples.title}</span>
+          <span className={styles.value}>
+            {staples ? strings.staples.count(staples.length) : ''}
+          </span>
+          <Icon name="chevron" size={16} />
+        </Link>
+      </Group>
 
       <Group label={strings.settings.account}>
         <Row>{auth.status === 'signedIn' ? auth.email : ''}</Row>

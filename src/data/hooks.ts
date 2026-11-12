@@ -8,6 +8,7 @@
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Photo, Recipe, RecipeInput } from '../domain/recipe';
+import * as pantry from './pantry';
 import * as api from './recipes';
 
 const recipesKey = ['recipes'] as const;
@@ -154,4 +155,55 @@ export function usePhotoUrls(paths: string[]) {
     staleTime: (api.SIGNED_URL_SECONDS - 600) * 1000,
     gcTime: (api.SIGNED_URL_SECONDS - 600) * 1000,
   });
+}
+
+// ---------------------------------------------------------------------------
+// « Mon frigo » et basiques
+// ---------------------------------------------------------------------------
+
+/** Contenu de « Mon frigo » ou liste des basiques, selon la table. */
+export function usePantryEntries(table: pantry.PantryTable) {
+  return useQuery({ queryKey: [table], queryFn: () => pantry.listEntries(table) });
+}
+
+/**
+ * Ajout et retrait avec mise à jour immédiate de l'affichage : on tape vite plusieurs
+ * ingrédients d'affilée, l'écran ne doit pas attendre le serveur à chaque fois.
+ */
+export function usePantryMutations(table: pantry.PantryTable) {
+  const client = useQueryClient();
+  const key = [table];
+  const settle = () => client.invalidateQueries({ queryKey: key });
+
+  async function optimistic(update: (list: pantry.PantryEntry[]) => pantry.PantryEntry[]) {
+    await client.cancelQueries({ queryKey: key });
+    const previous = client.getQueryData<pantry.PantryEntry[]>(key);
+    client.setQueryData<pantry.PantryEntry[]>(key, (list) => update(list ?? []));
+    return () => client.setQueryData(key, previous);
+  }
+
+  const add = useMutation({
+    mutationFn: (label: string) => pantry.addEntry(table, label),
+    onMutate: (label: string) =>
+      optimistic((list) => [...list, { normalized: `nouveau:${label}`, label }]),
+    onError: (_error, _label, rollback) => rollback?.(),
+    onSettled: settle,
+  });
+
+  const remove = useMutation({
+    mutationFn: (normalized: string) => pantry.removeEntry(table, normalized),
+    onMutate: (normalized: string) =>
+      optimistic((list) => list.filter((entry) => entry.normalized !== normalized)),
+    onError: (_error, _normalized, rollback) => rollback?.(),
+    onSettled: settle,
+  });
+
+  const clear = useMutation({
+    mutationFn: pantry.clearPantry,
+    onMutate: () => optimistic(() => []),
+    onError: (_error, _vars, rollback) => rollback?.(),
+    onSettled: settle,
+  });
+
+  return { add, remove, clear };
 }
