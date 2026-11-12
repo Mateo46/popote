@@ -271,9 +271,10 @@ _Acceptation_ : **validation explicite du propriétaire** avant toute suite.
 
 ### Phase 3 — Socle ⛔
 
-🟡 **En cours.** Fait : projet, qualité, CI, migrations (validées sur Postgres embarqué),
-connexion, garde de routes, PWA, workflows. Reste : appliquer la migration, configurer
-GitHub Pages, tester la connexion réelle et l'installation sur iPhone.
+🟡 **Presque terminée (12/11/2026).** En ligne sur https://mateo46.github.io/popote/.
+Vérifié : CI et déploiement verts, migration appliquée, accès anonyme refusé sur toutes
+les tables, inscriptions fermées, liens directs et service worker fonctionnels.
+Reste : connexion réelle et installation sur iPhone, par le propriétaire.
 
 - Initialiser le projet (Vite, React, TS strict, ESLint, Prettier, Vitest), l'arborescence
   du §3, la CI (lint, types, tests, build).
