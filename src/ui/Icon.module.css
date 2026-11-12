@@ -1,0 +1,13 @@
+.icon {
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.filled {
+  fill: currentColor;
+  fill-opacity: 0.22;
+}

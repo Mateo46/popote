@@ -1,0 +1,31 @@
+# Vérifications à chaque push et pull request : lint, format, types, tests, build.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      - name: Build
+        run: npm run build
+        env:
+          # Valeurs factices : le build ne contacte pas Supabase.
+          VITE_SUPABASE_URL: https://exemple.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: cle-factice-pour-la-ci-uniquement

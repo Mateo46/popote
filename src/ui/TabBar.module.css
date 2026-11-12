@@ -1,0 +1,51 @@
+.bar {
+  position: fixed;
+  z-index: 20;
+  left: max(16px, env(safe-area-inset-left));
+  right: max(16px, env(safe-area-inset-right));
+  /* Au-dessus de l'indicateur d'accueil de l'iPhone. */
+  bottom: max(16px, calc(env(safe-area-inset-bottom) - 8px));
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.tabs {
+  flex: 1;
+  height: 62px;
+  border-radius: var(--radius-full);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 4px;
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border-radius: var(--radius-full);
+  font: 600 10px/1.2 var(--font-sans);
+  color: var(--color-text);
+  transition: background-color var(--duration);
+}
+
+.tab[aria-current='page'] {
+  background: var(--glass-selected);
+  color: var(--color-accent);
+}
+
+.search {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--color-text);
+  flex: none;
+}
+
+.search[aria-current='page'] {
+  color: var(--color-accent);
+}

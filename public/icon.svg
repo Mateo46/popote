@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Icône Popote : une cocotte vue de face, sur le vert « basilic » de l'accent. -->
+  <rect width="512" height="512" fill="#2c774b"/>
+  <g fill="none" stroke="#ffffff" stroke-width="26" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M136 236h240v86a70 70 0 0 1-70 70H206a70 70 0 0 1-70-70z"/>
+    <path d="M136 262H104M376 262h32"/>
+    <path d="M124 236c0-40 58-66 132-66s132 26 132 66"/>
+    <path d="M232 160c0-14 10-24 24-24s24 10 24 24"/>
+  </g>
+</svg>

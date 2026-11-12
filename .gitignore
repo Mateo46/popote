@@ -1,0 +1,27 @@
+# Dépendances et sorties de build
+node_modules
+dist
+dev-dist
+coverage
+*.tsbuildinfo
+
+# Variables d'environnement locales (contiennent des clés : ne jamais versionner)
+.env
+.env.*
+!.env.example
+
+# Photos HelloFresh des maquettes : contenu tiers, à ne pas publier dans un dépôt public
+mockups/img/
+
+# Fichiers d'éditeur et système
+.DS_Store
+.vscode
+.idea
+*.log
+
+# Supabase CLI (fichiers temporaires locaux)
+supabase/.temp
+supabase/.branches
+
+# Configuration locale de Claude Code
+.claude/

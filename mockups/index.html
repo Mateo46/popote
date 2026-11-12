@@ -1,0 +1,725 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maquettes du carnet de recettes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Mise en page : galerie d'écrans iPhone (390 × 844) qui passent à la ligne ; un écran par ligne sur téléphone.
+   Navigation en Liquid Glass (iOS 26/27) : barre d'onglets flottante + onglet Recherche séparé, boutons flottants, feuille.
+   Les tokens ci-dessous sont une copie de src/styles/tokens.css (source de vérité). */
+:root {
+  --color-bg: #f4f5f3; --color-surface: #ffffff; --color-fill: #eaece9;
+  --color-separator: rgb(24 32 27 / 0.12);
+  --color-text: #131614; --color-text-secondary: #5c635e; --color-text-tertiary: #8b918d;
+  --color-accent: #2c774b; --color-on-accent: #ffffff; --color-accent-soft: #e1efe6;
+  --color-star: #e39d17; --color-star-empty: #d3d7d4;
+  --color-warning: #9a5b00; --color-warning-soft: #fbefd8; --color-danger: #c4382c;
+  --color-overlay: rgb(255 255 255 / 0.92); --color-scrim: rgb(12 16 14 / 0.28);
+  --glass-bg: rgb(255 255 255 / 0.58); --glass-tint-accent: rgb(44 119 75 / 0.88);
+  --glass-selected: rgb(19 22 20 / 0.07); --glass-edge: rgb(0 0 0 / 0.10);
+  --glass-highlight: rgb(255 255 255 / 0.95);
+  --glass-shadow: 0 8px 28px rgb(18 28 22 / 0.14), 0 1px 3px rgb(18 28 22 / 0.08);
+  --glass-filter: blur(16px) saturate(180%); --edge-fade: rgb(244 245 243 / 0.92);
+  --page-bg: #e3e6e2; --frame-edge: #c9cdca; --photo-text: #ffffff;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-rounded: ui-rounded, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --text-large-title: 700 2.125rem/1.2 var(--font-sans);
+  --text-title: 700 1.375rem/1.27 var(--font-sans);
+  --text-headline: 600 1.0625rem/1.3 var(--font-sans);
+  --text-body: 400 1.0625rem/1.4 var(--font-sans);
+  --text-subhead: 400 0.9375rem/1.35 var(--font-sans);
+  --text-footnote: 400 0.8125rem/1.35 var(--font-sans);
+  --text-caption: 500 0.6875rem/1.2 var(--font-sans);
+  --text-stat: 600 1.25rem/1.1 var(--font-rounded);
+  --radius-s: 8px; --radius-m: 12px; --radius-full: 999px; --tap-min: 44px; --duration: 160ms;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: #0c0e0d; --color-surface: #171a18; --color-fill: #232725;
+    --color-separator: rgb(222 236 227 / 0.12);
+    --color-text: #edf0ee; --color-text-secondary: #a1a9a4; --color-text-tertiary: #6f7772;
+    --color-accent: #5cbd85; --color-on-accent: #07150c; --color-accent-soft: #16281d;
+    --color-star: #f0b43c; --color-star-empty: #3a403c;
+    --color-warning: #f0b43c; --color-warning-soft: #2b2312; --color-danger: #ef6a5e;
+    --color-overlay: rgb(23 26 24 / 0.9); --color-scrim: rgb(0 0 0 / 0.5);
+    --glass-bg: rgb(44 49 46 / 0.52); --glass-tint-accent: rgb(92 189 133 / 0.9);
+    --glass-selected: rgb(255 255 255 / 0.10); --glass-edge: rgb(0 0 0 / 0.55);
+    --glass-highlight: rgb(255 255 255 / 0.22);
+    --glass-shadow: 0 8px 28px rgb(0 0 0 / 0.45), 0 1px 3px rgb(0 0 0 / 0.3);
+    --edge-fade: rgb(12 14 13 / 0.92);
+    --page-bg: #1c201e; --frame-edge: #343a37;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --color-bg: #0c0e0d; --color-surface: #171a18; --color-fill: #232725;
+  --color-separator: rgb(222 236 227 / 0.12);
+  --color-text: #edf0ee; --color-text-secondary: #a1a9a4; --color-text-tertiary: #6f7772;
+  --color-accent: #5cbd85; --color-on-accent: #07150c; --color-accent-soft: #16281d;
+  --color-star: #f0b43c; --color-star-empty: #3a403c;
+  --color-warning: #f0b43c; --color-warning-soft: #2b2312; --color-danger: #ef6a5e;
+  --color-overlay: rgb(23 26 24 / 0.9); --color-scrim: rgb(0 0 0 / 0.5);
+  --glass-bg: rgb(44 49 46 / 0.52); --glass-tint-accent: rgb(92 189 133 / 0.9);
+  --glass-selected: rgb(255 255 255 / 0.10); --glass-edge: rgb(0 0 0 / 0.55);
+  --glass-highlight: rgb(255 255 255 / 0.22);
+  --glass-shadow: 0 8px 28px rgb(0 0 0 / 0.45), 0 1px 3px rgb(0 0 0 / 0.3);
+  --edge-fade: rgb(12 14 13 / 0.92);
+  --page-bg: #1c201e; --frame-edge: #343a37;
+  color-scheme: dark;
+}
+@media (prefers-reduced-motion: reduce) { :root { --duration: 0ms; } }
+@media (prefers-reduced-transparency: reduce) { :root { --glass-bg: var(--color-overlay); --glass-filter: none; } }
+@media (prefers-contrast: more) { :root { --glass-bg: var(--color-surface); --glass-filter: none; --glass-edge: var(--color-text-tertiary); } }
+
+* { box-sizing: border-box; }
+body {
+  background: var(--page-bg); color: var(--color-text); font: var(--text-subhead);
+  -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 32px 64px;
+}
+button, input, textarea { font: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+.num { font-variant-numeric: tabular-nums; }
+svg.i { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+svg.i.s { width: 16px; height: 16px; }
+
+/* ---------- Page de maquettes ---------- */
+.intro { max-width: 1304px; margin: 0 auto 32px; display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: end; justify-content: space-between; }
+.intro h1 { font: var(--text-large-title); margin: 0 0 6px; letter-spacing: -0.01em; }
+.intro p { margin: 0; color: var(--color-text-secondary); max-width: 64ch; }
+.seg { display: inline-flex; background: var(--color-fill); border-radius: 9px; padding: 2px; }
+.seg button { min-height: 32px; padding: 0 14px; border-radius: 7px; font: var(--text-footnote); font-weight: 500; color: var(--color-text-secondary); }
+.seg button[aria-pressed="true"] { background: var(--color-surface); color: var(--color-text); box-shadow: 0 1px 2px rgb(0 0 0 / 0.12); }
+.seg.full { display: flex; }
+.seg.full button { flex: 1; }
+.gallery { max-width: 1304px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 48px 40px; }
+.shot { margin: 0; width: 408px; max-width: 100%; display: flex; flex-direction: column; gap: 12px; }
+.shot figcaption { display: flex; flex-direction: column; gap: 2px; min-height: 40px; padding-inline: 9px; }
+.shot figcaption b { font: var(--text-headline); }
+.shot figcaption span { font: var(--text-footnote); color: var(--color-text-secondary); }
+
+/* ---------- Cadre iPhone ---------- */
+.phone {
+  position: relative; height: 844px; max-height: 88vh; min-height: 640px;
+  border-radius: 48px; overflow: hidden; background: var(--color-bg); isolation: isolate;
+  border: 1px solid var(--frame-edge); box-shadow: 0 0 0 8px var(--color-surface), 0 0 0 9px var(--frame-edge);
+  margin: 9px;
+}
+.scroll { position: absolute; inset: 0; overflow-y: auto; scrollbar-width: none; padding-top: 50px; padding-bottom: 110px; }
+.scroll::-webkit-scrollbar { display: none; }
+.scroll.under-status { padding-top: 0; }
+.status { position: absolute; top: 0; left: 0; right: 0; z-index: 6; height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 6px 30px 0 34px; font: 600 15px/1 var(--font-sans); pointer-events: none; }
+.status svg { height: 12px; fill: currentColor; }
+.status .icons { display: flex; gap: 6px; align-items: center; }
+.status.on-photo { color: var(--photo-text); }
+/* Fondu haut (iOS 27) : le contenu qui passe sous la barre d'état reste lisible. */
+.edge { position: absolute; top: 0; left: 0; right: 0; height: 64px; z-index: 5; pointer-events: none;
+  background: linear-gradient(var(--edge-fade) 55%, transparent); }
+
+/* ---------- Liquid Glass ---------- */
+.glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter);
+  box-shadow: inset 0 1px 0 var(--glass-highlight), inset 0 0 0 0.5px var(--glass-highlight), 0 0 0 0.5px var(--glass-edge), var(--glass-shadow);
+}
+.gbtn { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: var(--color-text); flex: none; }
+.gbtn.tint { background: var(--glass-tint-accent); color: var(--color-on-accent); }
+
+/* Barre d'onglets flottante + onglet Recherche séparé */
+.tabs { position: absolute; left: 16px; right: 16px; bottom: 26px; z-index: 7; display: flex; gap: 10px; align-items: center; }
+.tabbar { flex: 1; height: 62px; border-radius: var(--radius-full); display: grid; grid-template-columns: repeat(3, 1fr); padding: 4px; }
+.tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: var(--radius-full); font: 600 10px/1.2 var(--font-sans); color: var(--color-text); text-decoration: none; }
+.tabbar a[aria-current="page"] { background: var(--glass-selected); color: var(--color-accent); }
+.tabbar a[aria-current="page"] svg { fill: currentColor; fill-opacity: 0.22; }
+.tabbar svg.i { width: 24px; height: 24px; }
+.tab-search { width: 62px; height: 62px; border-radius: 50%; display: grid; place-items: center; color: var(--color-text); flex: none; }
+.tab-search[aria-current="page"] { color: var(--color-accent); }
+.tab-search svg.i { width: 24px; height: 24px; }
+/* Recherche active : la barre se réduit à l'onglet courant, le champ prend la place. */
+.tabs.searching .mini { width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center; color: var(--color-text); flex: none; }
+.searchfield { flex: 1; height: 50px; border-radius: var(--radius-full); display: flex; align-items: center; gap: 8px; padding: 0 8px 0 16px; font: var(--text-body); min-width: 0; }
+.searchfield svg { color: var(--color-text-secondary); }
+.searchfield .q { flex: 1; min-width: 0; }
+.searchfield .caret { display: inline-block; width: 2px; height: 20px; background: var(--color-accent); vertical-align: -4px; margin-left: 1px; }
+.searchfield .clear { width: 22px; height: 22px; border-radius: 50%; background: var(--color-text-tertiary); color: var(--color-surface); display: grid; place-items: center; }
+.searchfield .clear svg { width: 14px; height: 14px; color: var(--color-surface); stroke-width: 2.4; }
+
+/* ---------- En-têtes ---------- */
+.head { padding: 6px 16px 12px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.head h2 { font: var(--text-large-title); letter-spacing: -0.012em; margin: 0; }
+.head p { margin: 2px 0 0; color: var(--color-text-secondary); font: var(--text-subhead); }
+.toolbar { position: absolute; top: 54px; left: 16px; right: 16px; z-index: 7; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.toolbar b { font: var(--text-headline); }
+
+/* ---------- Éléments communs ---------- */
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 4px 16px 12px; scrollbar-width: none; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 14px; border-radius: var(--radius-full); background: var(--color-fill); font: var(--text-footnote); font-weight: 500; color: var(--color-text); white-space: nowrap; }
+.chip[aria-pressed="true"] { background: var(--color-text); color: var(--color-surface); }
+.chip svg.i.s { width: 14px; height: 14px; }
+.section-label { font: var(--text-caption); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-secondary); padding: 20px 16px 8px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.section-label em { font-style: normal; text-transform: none; letter-spacing: 0; font: var(--text-footnote); color: var(--color-text-tertiary); }
+.group { margin: 0 16px; background: var(--color-surface); border-radius: var(--radius-m); overflow: hidden; }
+.row { display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 48px; position: relative; }
+.row + .row::before { content: ""; position: absolute; top: 0; left: 16px; right: 0; border-top: 0.5px solid var(--color-separator); }
+.row .grow { flex: 1; min-width: 0; padding-block: 12px; }
+.row .val { color: var(--color-text-secondary); }
+.row .chev { color: var(--color-text-tertiary); }
+.note { font: var(--text-footnote); color: var(--color-text-secondary); padding: 8px 16px 0; margin: 0; }
+.note a { color: var(--color-accent); text-decoration: none; }
+
+/* Liste de recettes */
+.list { background: var(--color-surface); border-block: 0.5px solid var(--color-separator); }
+.item { display: flex; gap: 12px; padding: 10px 16px; align-items: center; position: relative; }
+.item + .item::before { content: ""; position: absolute; top: 0; left: 92px; right: 0; border-top: 0.5px solid var(--color-separator); }
+.thumb { width: 64px; height: 64px; border-radius: var(--radius-s); object-fit: cover; flex: none; background: var(--color-fill); }
+.item .txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.item .t { font: var(--text-headline); font-size: 16px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-wrap: pretty; }
+.item .st { font: var(--text-footnote); color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.item mark { background: var(--color-accent-soft); color: var(--color-accent); border-radius: 3px; padding: 0 2px; }
+.meta { display: flex; gap: 10px; align-items: center; font: var(--text-footnote); color: var(--color-text-secondary); margin-top: 2px; font-variant-numeric: tabular-nums; }
+.meta .r { display: inline-flex; gap: 3px; align-items: center; color: var(--color-text); font-weight: 600; }
+.meta .r svg { width: 13px; height: 13px; fill: var(--color-star); }
+.meta .dim { color: var(--color-text-tertiary); }
+.meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--color-text-tertiary); }
+
+/* Fiche recette */
+.hero { position: relative; }
+.hero img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+.title-block { background: var(--color-surface); padding: 16px 16px 0; }
+.title-block h2 { font: var(--text-title); margin: 0; letter-spacing: -0.005em; text-wrap: balance; }
+.title-block p { margin: 4px 0 0; color: var(--color-text-secondary); }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 16px; padding-block: 14px; border-top: 0.5px solid var(--color-separator); }
+.stats div { display: flex; flex-direction: column; gap: 4px; padding-left: 12px; border-left: 0.5px solid var(--color-separator); }
+.stats div:first-child { padding-left: 0; border-left: 0; }
+.stats b { font: var(--text-stat); font-variant-numeric: tabular-nums; }
+.stats b small { font: 500 13px/1 var(--font-sans); color: var(--color-text-secondary); margin-left: 2px; }
+.stats span { font: var(--text-caption); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-tertiary); }
+.rating-card { background: var(--color-surface); margin-top: 8px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.rating-top { display: flex; justify-content: space-between; align-items: center; }
+.rating-top .lbl { font: var(--text-caption); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-secondary); }
+.rating-top .v { font: var(--text-stat); font-variant-numeric: tabular-nums; }
+.rating-top .v small { font: 500 13px/1 var(--font-sans); color: var(--color-text-tertiary); }
+.stars { display: flex; gap: 6px; touch-action: manipulation; }
+.star { position: relative; width: 36px; height: 36px; display: block; cursor: pointer; }
+.star svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.star .e { fill: var(--color-star-empty); }
+.star .f { fill: var(--color-star); }
+.comment { font: var(--text-subhead); color: var(--color-text); margin: 0; padding: 12px; background: var(--color-fill); border-radius: var(--radius-s); }
+.comment small { display: block; margin-top: 6px; color: var(--color-text-tertiary); font: var(--text-footnote); }
+.cooked { display: flex; gap: 12px; align-items: center; }
+.btn-primary { flex: none; display: inline-flex; gap: 8px; align-items: center; justify-content: center; min-height: var(--tap-min); padding: 0 18px; border-radius: var(--radius-full); background: var(--color-accent); color: var(--color-on-accent); font: var(--text-headline); font-size: 16px; }
+.btn-secondary { display: inline-flex; gap: 8px; align-items: center; justify-content: center; min-height: var(--tap-min); padding: 0 16px; border-radius: var(--radius-full); background: var(--color-accent-soft); color: var(--color-accent); font: var(--text-headline); font-size: 15px; }
+.cooked p { margin: 0; font: var(--text-footnote); color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+.ing .row { min-height: 44px; }
+.ing .q { color: var(--color-text-secondary); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.steps .step { display: grid; grid-template-columns: 24px 1fr 72px; gap: 12px; padding: 14px 16px; align-items: start; position: relative; }
+.steps .step + .step::before { content: ""; position: absolute; top: 0; left: 52px; right: 0; border-top: 0.5px solid var(--color-separator); }
+.steps .n { font: 600 15px/22px var(--font-rounded); color: var(--color-accent); font-variant-numeric: tabular-nums; }
+.steps p { margin: 0; font: var(--text-subhead); }
+.steps img { width: 72px; height: 54px; object-fit: cover; border-radius: 6px; }
+.nut .row { min-height: 40px; }
+.nut .sub .grow { padding-left: 12px; color: var(--color-text-secondary); }
+.photos { display: flex; gap: 8px; padding: 0 16px; overflow-x: auto; scrollbar-width: none; }
+.photos figure { margin: 0; flex: none; display: flex; flex-direction: column; gap: 4px; }
+.photos img, .photos .add { width: 112px; height: 112px; border-radius: var(--radius-m); object-fit: cover; }
+.photos figcaption { font: var(--text-footnote); color: var(--color-text-secondary); }
+.photos .add { display: grid; place-items: center; align-content: center; gap: 6px; border: 1px dashed var(--color-text-tertiary); color: var(--color-text-secondary); font: var(--text-footnote); }
+.link-out { display: flex; gap: 8px; align-items: center; color: var(--color-accent); padding: 20px 16px 0; font: var(--text-subhead); text-decoration: none; }
+
+/* Mon frigo */
+.pantry-input { margin: 0 16px; background: var(--color-surface); border-radius: var(--radius-m); padding: 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+.pchip { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; padding: 0 6px 0 12px; border-radius: var(--radius-full); background: var(--color-accent-soft); color: var(--color-accent); font: var(--text-footnote); font-weight: 600; }
+.pchip svg { width: 18px; height: 18px; }
+.pantry-input .ph { min-height: 32px; display: inline-flex; align-items: center; color: var(--color-text-tertiary); font: var(--text-subhead); padding-left: 4px; }
+.match { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex: none; width: 48px; }
+.match b { font: var(--text-stat); font-size: 17px; font-variant-numeric: tabular-nums; }
+.match b small { font: 500 13px/1 var(--font-sans); color: var(--color-text-tertiary); }
+.bar { width: 48px; height: 4px; border-radius: 2px; background: var(--color-fill); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--color-accent); border-radius: 2px; }
+.missing { font: var(--text-footnote); color: var(--color-text-secondary); }
+.missing b { font-weight: 500; color: var(--color-text); }
+
+/* Feuille « Ajouter » (détente moyenne, flottante en verre) */
+.scrim { position: absolute; inset: 0; z-index: 8; background: var(--color-scrim); }
+.sheet { position: absolute; left: 8px; right: 8px; bottom: 8px; z-index: 9; border-radius: 40px; padding: 8px 0 20px; display: flex; flex-direction: column; }
+.sheet .grabber { width: 36px; height: 5px; border-radius: 3px; background: var(--color-text-tertiary); opacity: 0.5; margin: 0 auto 6px; }
+.sheet .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 0 14px 0 22px; min-height: 52px; }
+.sheet .sheet-head b { font: var(--text-headline); font-size: 18px; }
+.sheet .sheet-head .gbtn { width: 36px; height: 36px; }
+.sheet .opts { margin: 4px 14px 0; border-radius: 26px; background: var(--color-surface); overflow: hidden; }
+.big-row { display: flex; gap: 14px; align-items: center; padding: 14px 16px; position: relative; }
+.big-row + .big-row::before { content: ""; position: absolute; top: 0; left: 66px; right: 0; border-top: 0.5px solid var(--color-separator); }
+.big-row .ic { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: var(--color-accent-soft); color: var(--color-accent); flex: none; }
+.big-row .grow { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.big-row .grow b { font: var(--text-headline); font-size: 16px; }
+.big-row .grow span { font: var(--text-footnote); color: var(--color-text-secondary); }
+.big-row .chev { color: var(--color-text-tertiary); }
+.paste { margin: 12px 14px 0; display: flex; gap: 8px; }
+.field { flex: 1; display: flex; align-items: center; gap: 8px; background: var(--color-surface); border-radius: var(--radius-full); padding: 0 16px; min-height: 48px; font: var(--text-subhead); color: var(--color-text); min-width: 0; }
+.field span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.paste .btn-primary { min-height: 48px; }
+
+/* Vérifier un scan */
+.banner { margin: 8px 16px 0; padding: 14px; border-radius: var(--radius-m); background: var(--color-surface); display: flex; flex-direction: column; gap: 10px; }
+.banner p { margin: 0; font: var(--text-subhead); }
+.banner p b { font-weight: 600; }
+.banner .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.banner .actions .btn-secondary { min-height: 36px; font-size: 14px; padding: 0 14px; }
+.scans { display: flex; gap: 8px; padding: 0 16px; }
+.scan { width: 84px; height: 112px; border-radius: var(--radius-s); background: var(--color-surface); border: 0.5px solid var(--color-separator); padding: 10px 8px; display: flex; flex-direction: column; gap: 5px; position: relative; }
+.scan i { display: block; height: 4px; border-radius: 2px; background: var(--color-fill); }
+.scan i.w { width: 60%; height: 6px; background: var(--color-text-tertiary); opacity: 0.5; }
+.scan span { position: absolute; bottom: 6px; left: 8px; font: var(--text-caption); color: var(--color-text-secondary); }
+.form .row { min-height: 46px; }
+.form .lab { width: 92px; flex: none; color: var(--color-text-secondary); font: var(--text-subhead); }
+.form .inp { flex: 1; min-width: 0; font: var(--text-subhead); padding-block: 12px; }
+.ingr-edit .row { gap: 8px; }
+.ingr-edit .qty { width: 72px; flex: none; color: var(--color-text-secondary); font: var(--text-subhead); font-variant-numeric: tabular-nums; }
+.ingr-edit .inp { flex: 1; font: var(--text-subhead); padding-block: 12px; min-width: 0; }
+.ingr-edit .warn { background: var(--color-warning-soft); }
+.ingr-edit .warn .flag { font: var(--text-caption); color: var(--color-warning); text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+.ingr-edit mark { background: none; color: var(--color-warning); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+.add-line { color: var(--color-accent); }
+.disclosure { color: var(--color-accent); }
+
+/* Réglages */
+.danger { color: var(--color-danger); }
+.version { text-align: center; font: var(--text-footnote); color: var(--color-text-tertiary); padding: 24px 0 0; margin: 0; }
+.avatar { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 600 13px/1 var(--font-rounded); background: var(--color-accent-soft); color: var(--color-accent); flex: none; }
+
+@media (max-width: 440px) {
+  .phone { margin: 0; border-radius: 40px; box-shadow: none; }
+  .shot figcaption { padding-inline: 0; }
+  .gallery { gap: 40px; }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.6l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 16.8l-5.8 3.3 1.4-6.4-4.9-4.4 6.5-.7z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M5 4.5h10.5A3.5 3.5 0 0119 8v11.5H8.5A3.5 3.5 0 015 16z"/><path d="M5 16a3.5 3.5 0 013.5-3.5H19"/></symbol>
+    <symbol id="i-basket" viewBox="0 0 24 24"><path d="M3.5 10h17l-1.6 8.2a2 2 0 01-2 1.6H7.1a2 2 0 01-2-1.6z"/><path d="M8 10l3-5.5M16 10l-3-5.5M9.5 14v2.5M14.5 14v2.5"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.2M12 18.3v2.2M20.5 12h-2.2M5.7 12H3.5M18 6l-1.6 1.6M7.6 16.4L6 18M18 18l-1.6-1.6M7.6 7.6L6 6"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9.5 6l6 6-6 6"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M14.5 6l-6 6 6 6"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="6" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18" cy="12" r="1.2"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path d="M4 8.5A1.5 1.5 0 015.5 7h2.3l1.5-2h5.4l1.5 2h2.3A1.5 1.5 0 0120 8.5v9a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 17.5z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M15 5l4 4L8.5 19.5H4.5v-4z"/><path d="M13 7l4 4"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24"><path d="M14 4.5h5.5V10M19.5 4.5L11 13"/><path d="M17 14v4.5a1 1 0 01-1 1H5.5a1 1 0 01-1-1V8a1 1 0 011-1H10"/></symbol>
+    <symbol id="i-paste" viewBox="0 0 24 24"><rect x="6" y="5" width="12" height="15" rx="2"/><path d="M9.5 5V3.5h5V5M9.5 10h5M9.5 13.5h5"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 19.5s-7-4.3-7-9.6A4 4 0 0112 7.6a4 4 0 017 2.3c0 5.3-7 9.6-7 9.6z"/></symbol>
+  </defs>
+</svg>
+
+<template id="statusbar">
+  <span class="num">9:41</span><span class="icons"><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 26 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3" fill="none" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="1.5"/><rect x="24" y="4" width="1.5" height="4" rx=".7" opacity=".4"/></svg></span>
+</template>
+
+<header class="intro">
+  <div>
+    <h1>Maquettes de l'app</h1>
+    <p>Sept écrans au format iPhone, avec de vraies recettes HelloFresh. La navigation suit iOS 26 et 27 : barre d'onglets flottante en Liquid Glass, onglet Recherche à droite, bouton « + » et feuille d'ajout flottante. Les étoiles de la fiche se touchent par demi-étoile ; faites défiler les écrans pour voir le verre au-dessus du contenu.</p>
+  </div>
+  <div class="seg" role="group" aria-label="Thème des maquettes" data-theme-switch>
+    <button type="button" data-value="system" aria-pressed="true">Système</button>
+    <button type="button" data-value="light" aria-pressed="false">Clair</button>
+    <button type="button" data-value="dark" aria-pressed="false">Sombre</button>
+  </div>
+</header>
+
+<main class="gallery">
+
+  <!-- ===================== 1. Recettes ===================== -->
+  <figure class="shot">
+    <figcaption><b>Recettes</b><span>Accueil : tri, liste par note, « + » pour ajouter. La recherche a son onglet.</span></figcaption>
+    <div class="phone">
+      <div class="status" data-status></div><div class="edge"></div>
+      <div class="scroll">
+        <div class="head"><div><h2>Recettes</h2><p class="num">112 recettes</p></div><button class="gbtn glass" aria-label="Ajouter une recette"><svg class="i"><use href="#i-plus"/></svg></button></div>
+        <div class="chips">
+          <button class="chip" aria-pressed="true">Mieux notées</button>
+          <button class="chip" aria-pressed="false">Récentes</button>
+          <button class="chip" aria-pressed="false">Rapides</button>
+          <button class="chip" aria-pressed="false">Cuisinées récemment</button>
+        </div>
+        <div class="list">
+          <div class="item"><img class="thumb" src="img/chimichurri.jpg" alt=""><div class="txt"><span class="t">Bavette grillée &amp; sauce chimichurri</span><span class="st">avec une purée de patate douce</span><div class="meta"><span class="r"><svg><use href="#i-star"/></svg>5</span><span>35 min</span><span class="dot"></span><span>Il y a 12 j</span></div></div></div>
+          <div class="item"><img class="thumb" src="img/bobun.jpg" alt=""><div class="txt"><span class="t">Bò bún vietnamien au bœuf sauté</span><span class="st">avec des nouilles de riz &amp; des cacahuètes</span><div class="meta"><span class="r"><svg><use href="#i-star"/></svg>4,5</span><span>45 min</span><span class="dot"></span><span>Il y a 3 sem.</span></div></div></div>
+          <div class="item"><img class="thumb" src="img/azteca.jpg" alt=""><div class="txt"><span class="t">Azteca Bowl : poulet, avocat &amp; sauce yaourt</span><span class="st">garni de patate douce &amp; pickles d'oignon</span><div class="meta"><span class="r"><svg><use href="#i-star"/></svg>4,5</span><span>35 min</span><span class="dot"></span><span>Il y a 2 mois</span></div></div></div>
+          <div class="item"><img class="thumb" src="img/bavette.jpg" alt=""><div class="txt"><span class="t">Bavette et beurre aux fines herbes</span><span class="st">avec des tomates au four, de la salade et des grenailles</span><div class="meta"><span class="r"><svg><use href="#i-star"/></svg>4</span><span>35 min</span><span class="dot"></span><span>Il y a 25 j</span></div></div></div>
+          <div class="item"><img class="thumb" src="img/teriyaki.jpg" alt=""><div class="txt"><span class="t">Boulettes de bœuf sauce teriyaki</span><span class="st">avec du riz au gomasio &amp; une salade</span><div class="meta"><span class="r"><svg><use href="#i-star"/></svg>4</span><span>40 min</span><span class="dot"></span><span>Il y a 4 mois</span></div></div></div>
+          <div class="item"><img class="thumb" src="img/levant.jpg" alt=""><div class="txt"><span class="t">Assiette du Levant, falafels &amp; labneh</span><span class="st">avec du houmous maison &amp; des carottes au miel</span><div class="meta"><span class="r"><svg><use href="#i-star"/></svg>3,5</span><span>40 min</span><span class="dot"></span><span>Il y a 5 mois</span></div></div></div>
+          <div class="item"><img class="thumb" src="img/aubergine.jpg" alt=""><div class="txt"><span class="t">Aubergine laquée au miso, sauce soja &amp; miel</span><span class="st">avec une salade de concombre aigre-doux</span><div class="meta"><span class="dim">Non notée</span><span>50 min</span><span class="dot"></span><span class="dim">Jamais cuisinée</span></div></div></div>
+        </div>
+      </div>
+      <div class="tabs" data-tabs="recettes"></div>
+    </div>
+  </figure>
+
+  <!-- ===================== 2. Fiche recette ===================== -->
+  <figure class="shot">
+    <figcaption><b>Fiche recette</b><span>Boutons flottants en verre sur la photo. Faites défiler : note, ingrédients, étapes, nutrition, photos, historique.</span></figcaption>
+    <div class="phone">
+      <div class="status on-photo" data-status></div>
+      <div class="toolbar">
+        <button class="gbtn glass" aria-label="Retour"><svg class="i"><use href="#i-back"/></svg></button>
+        <button class="gbtn glass" aria-label="Plus d'actions"><svg class="i"><use href="#i-more"/></svg></button>
+      </div>
+      <div class="scroll under-status">
+        <div class="hero"><img src="img/bavette.jpg" alt="Bavette tranchée, grenailles, tomates au four et salade"></div>
+        <div class="title-block">
+          <h2>Bavette et beurre aux fines herbes</h2>
+          <p>Avec des tomates au four, de la salade et des grenailles</p>
+          <div class="stats">
+            <div><b>35<small>min</small></b><span>Durée</span></div>
+            <div><b>Moyen</b><span>Difficulté</span></div>
+            <div><b>941</b><span>kcal</span></div>
+            <div><b>2</b><span>Pers.</span></div>
+          </div>
+        </div>
+        <div class="rating-card">
+          <div class="rating-top"><span class="lbl">Notre note</span><span class="v" data-rating-label>4<small> / 5</small></span></div>
+          <div class="stars" role="slider" tabindex="0" aria-label="Note de la recette" aria-valuemin="0" aria-valuemax="5" aria-valuenow="4" data-rating="4"></div>
+          <p class="comment">Bavette saignante : 1 min 30 par côté suffit. Doubler le beurre aux herbes, il en manque toujours.<small>Modifié le 18 oct.</small></p>
+          <div class="cooked">
+            <button class="btn-primary"><svg class="i s"><use href="#i-check"/></svg>Cuisinée aujourd'hui</button>
+            <p>4 fois<br>Dernière : 18 oct.</p>
+          </div>
+        </div>
+        <div class="section-label">Ingrédients <em>pour 2 personnes</em></div>
+        <div class="group ing">
+          <div class="row"><span class="grow">Bavette de bœuf</span><span class="q">240 g</span></div>
+          <div class="row"><span class="grow">Grenailles</span><span class="q">400 g</span></div>
+          <div class="row"><span class="grow">Tomate</span><span class="q">4</span></div>
+          <div class="row"><span class="grow">Roquette et mâche</span><span class="q">60 g</span></div>
+          <div class="row"><span class="grow">Chapelure panko</span><span class="q">25 g</span></div>
+          <div class="row"><span class="grow">Persil plat</span><span class="q">10 g</span></div>
+          <div class="row"><span class="grow">Gousse d'ail</span><span class="q">2</span></div>
+          <div class="row"><span class="grow">Épices italiennes</span><span class="q">2 c. à c.</span></div>
+          <div class="row"><span class="grow">Échalote</span><span class="q">½</span></div>
+        </div>
+        <div class="section-label">À avoir chez soi</div>
+        <div class="group ing">
+          <div class="row"><span class="grow">Huile d'olive</span><span class="q">6 c. à s.</span></div>
+          <div class="row"><span class="grow">Beurre</span><span class="q">2 c. à s.</span></div>
+          <div class="row"><span class="grow">Moutarde</span><span class="q">1 c. à c.</span></div>
+          <div class="row"><span class="grow">Vinaigre de vin rouge</span><span class="q">1 c. à c.</span></div>
+          <div class="row"><span class="grow">Sel, poivre</span><span class="q">selon le goût</span></div>
+        </div>
+        <div class="section-label">Étapes</div>
+        <div class="group steps">
+          <div class="step"><span class="n">1</span><p>Sortez le beurre du réfrigérateur. Préchauffez le four à 200 °C. Coupez les grenailles en deux, arrosez d'huile, salez, poivrez et enfournez 30 à 35 min.</p><img src="img/step1.jpg" alt=""></div>
+          <div class="step"><span class="n">2</span><p>Émincez l'ail. Coupez les tomates en deux. Émincez l'échalote et ciselez le persil.</p><img src="img/step2.jpg" alt=""></div>
+          <div class="step"><span class="n">3</span><p>Mélangez huile, épices italiennes, panko, la moitié de l'ail et un tiers du persil. Étalez sur les tomates et enfournez 15 à 20 min.</p><img src="img/step3.jpg" alt=""></div>
+          <div class="step"><span class="n">4</span><p>Préparez la vinaigrette avec l'échalote. Mélangez le beurre, le reste de l'ail et un tiers du persil.</p><img src="img/step4.jpg" alt=""></div>
+          <div class="step"><span class="n">5</span><p>Saisissez la bavette 1 à 2 min par côté à feu vif, puis laissez-la reposer 2 min sous une feuille d'aluminium.</p><img src="img/step5.jpg" alt=""></div>
+          <div class="step"><span class="n">6</span><p>Tranchez la bavette, servez avec les grenailles, la salade, les tomates et le beurre aux herbes.</p><img src="img/step6.jpg" alt=""></div>
+        </div>
+        <div class="section-label">Valeurs nutritionnelles <em>par portion · 655 g</em></div>
+        <div class="group nut num">
+          <div class="row"><span class="grow">Énergie</span><span class="val">941 kcal</span></div>
+          <div class="row"><span class="grow">Matières grasses</span><span class="val">60 g</span></div>
+          <div class="row sub"><span class="grow">dont acides gras saturés</span><span class="val">15 g</span></div>
+          <div class="row"><span class="grow">Glucides</span><span class="val">58 g</span></div>
+          <div class="row sub"><span class="grow">dont sucres</span><span class="val">9,8 g</span></div>
+          <div class="row"><span class="grow">Fibres</span><span class="val">8 g</span></div>
+          <div class="row"><span class="grow">Protéines</span><span class="val">38 g</span></div>
+          <div class="row"><span class="grow">Sel</span><span class="val">0,4 g</span></div>
+        </div>
+        <p class="note">Allergènes : blé, gluten, céleri.</p>
+        <div class="section-label">Photos</div>
+        <div class="photos">
+          <figure><img src="img/bavette.jpg" alt=""><figcaption>HelloFresh · couverture</figcaption></figure>
+          <button class="add"><svg class="i"><use href="#i-camera"/></svg>Ajouter</button>
+        </div>
+        <div class="section-label">Historique</div>
+        <div class="group num">
+          <div class="row"><span class="grow">Samedi 18 octobre 2026</span></div>
+          <div class="row"><span class="grow">Dimanche 7 septembre 2026</span></div>
+          <div class="row"><span class="grow">Mercredi 2 juillet 2026</span></div>
+          <div class="row"><span class="grow">Vendredi 9 mai 2026</span></div>
+        </div>
+        <a class="link-out" href="https://www.hellofresh.fr/recipes/bavette-et-beurre-aux-fines-herbes-5d53de8f162d6f000d5dac5a"><svg class="i s"><use href="#i-out"/></svg>Voir sur hellofresh.fr</a>
+      </div>
+      <div class="tabs" data-tabs="recettes"></div>
+    </div>
+  </figure>
+
+  <!-- ===================== 3. Recherche ===================== -->
+  <figure class="shot">
+    <figcaption><b>Recherche</b><span>Onglet Recherche : la barre se réduit et le champ s'affiche en bas, près du pouce.</span></figcaption>
+    <div class="phone">
+      <div class="status" data-status></div><div class="edge"></div>
+      <div class="scroll">
+        <div class="head"><h2>Rechercher</h2></div>
+        <div class="chips">
+          <button class="chip" aria-label="Tous les filtres"><svg class="i s"><use href="#i-sliders"/></svg>Filtres</button>
+          <button class="chip" aria-pressed="true">Note ≥ 4</button>
+          <button class="chip" aria-pressed="false">≤ 40 min</button>
+          <button class="chip" aria-pressed="false">Jamais cuisinée</button>
+          <button class="chip" aria-pressed="false">Végétarien</button>
+        </div>
+        <div class="section-label">Résultats <em>2 recettes</em></div>
+        <div class="list">
+          <div class="item"><img class="thumb" src="img/chimichurri.jpg" alt=""><div class="txt"><span class="t">Bavette grillée &amp; sauce chimichurri</span><span class="st">avec une purée de <mark>patate douce</mark></span><div class="meta"><span class="r"><svg><use href="#i-star"/></svg>5</span><span>35 min</span></div></div></div>
+          <div class="item"><img class="thumb" src="img/azteca.jpg" alt=""><div class="txt"><span class="t">Azteca Bowl : poulet, avocat &amp; sauce yaourt</span><span class="st">Ingrédient : <mark>patate douce</mark></span><div class="meta"><span class="r"><svg><use href="#i-star"/></svg>4,5</span><span>35 min</span></div></div></div>
+        </div>
+        <p class="note">1 autre recette correspond, mais elle est notée moins de 4. <a href="#">Retirer le filtre</a></p>
+        <div class="section-label">Recherches récentes</div>
+        <div class="group">
+          <div class="row"><svg class="i s" style="color:var(--color-text-tertiary)"><use href="#i-search"/></svg><span class="grow">bavette</span></div>
+          <div class="row"><svg class="i s" style="color:var(--color-text-tertiary)"><use href="#i-search"/></svg><span class="grow">curry</span></div>
+          <div class="row"><svg class="i s" style="color:var(--color-text-tertiary)"><use href="#i-search"/></svg><span class="grow">poulet</span></div>
+        </div>
+      </div>
+      <div class="tabs searching">
+        <button class="mini glass" aria-label="Revenir aux recettes"><svg class="i"><use href="#i-book"/></svg></button>
+        <div class="searchfield glass"><svg class="i s"><use href="#i-search"/></svg><span class="q">patate douce<span class="caret"></span></span><button class="clear" aria-label="Effacer"><svg class="i"><use href="#i-x"/></svg></button></div>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ===================== 4. Mon frigo ===================== -->
+  <figure class="shot">
+    <figcaption><b>Mon frigo</b><span>Recettes classées selon ce que vous avez, avec ce qui manque.</span></figcaption>
+    <div class="phone">
+      <div class="status" data-status></div><div class="edge"></div>
+      <div class="scroll">
+        <div class="head"><div><h2>Mon frigo</h2><p>Ce que vous avez sous la main</p></div></div>
+        <div class="pantry-input">
+          <span class="pchip">Bavette de bœuf<svg class="i"><use href="#i-x"/></svg></span>
+          <span class="pchip">Patate douce<svg class="i"><use href="#i-x"/></svg></span>
+          <span class="pchip">Ail<svg class="i"><use href="#i-x"/></svg></span>
+          <span class="pchip">Échalote<svg class="i"><use href="#i-x"/></svg></span>
+          <span class="pchip">Persil<svg class="i"><use href="#i-x"/></svg></span>
+          <span class="pchip">Salade<svg class="i"><use href="#i-x"/></svg></span>
+          <span class="pchip">Carotte<svg class="i"><use href="#i-x"/></svg></span>
+          <span class="pchip">Riz<svg class="i"><use href="#i-x"/></svg></span>
+          <span class="pchip">Œufs<svg class="i"><use href="#i-x"/></svg></span>
+          <span class="ph">Ajouter…</span>
+        </div>
+        <p class="note">Sel, poivre, huiles, beurre, sucre, farine et vinaigre sont toujours comptés. <a href="#">Modifier</a></p>
+        <div class="section-label">Les plus proches <em>sur 112 recettes</em></div>
+        <div class="list">
+          <div class="item"><img class="thumb" src="img/chimichurri.jpg" alt=""><div class="txt"><span class="t">Bavette grillée &amp; sauce chimichurri</span><span class="missing">Manque : <b>piment, paprika fumé</b></span></div><div class="match"><b>6<small>/8</small></b><span class="bar"><i style="width:75%"></i></span></div></div>
+          <div class="item"><img class="thumb" src="img/bavette.jpg" alt=""><div class="txt"><span class="t">Bavette et beurre aux fines herbes</span><span class="missing">Manque : <b>grenailles, tomate, panko</b> +3</span></div><div class="match"><b>4<small>/10</small></b><span class="bar"><i style="width:40%"></i></span></div></div>
+          <div class="item"><img class="thumb" src="img/azteca.jpg" alt=""><div class="txt"><span class="t">Azteca Bowl : poulet, avocat &amp; sauce yaourt</span><span class="missing">Manque : <b>poulet, avocat, yaourt grec</b> +2</span></div><div class="match"><b>3<small>/8</small></b><span class="bar"><i style="width:37.5%"></i></span></div></div>
+          <div class="item"><img class="thumb" src="img/teriyaki.jpg" alt=""><div class="txt"><span class="t">Boulettes de bœuf sauce teriyaki</span><span class="missing">Manque : <b>bœuf haché, gingembre, soja</b> +4</span></div><div class="match"><b>3<small>/10</small></b><span class="bar"><i style="width:30%"></i></span></div></div>
+          <div class="item"><img class="thumb" src="img/aubergine.jpg" alt=""><div class="txt"><span class="t">Aubergine laquée au miso, sauce soja &amp; miel</span><span class="missing">Manque : <b>aubergine, miso, soja</b> +7</span></div><div class="match"><b>4<small>/14</small></b><span class="bar"><i style="width:28.6%"></i></span></div></div>
+        </div>
+      </div>
+      <div class="tabs" data-tabs="frigo"></div>
+    </div>
+  </figure>
+
+  <!-- ===================== 5. Ajouter (feuille) ===================== -->
+  <figure class="shot">
+    <figcaption><b>Ajouter</b><span>Le « + » ouvre une feuille flottante en verre au-dessus des recettes.</span></figcaption>
+    <div class="phone">
+      <div class="status" data-status></div><div class="edge"></div>
+      <div class="scroll" aria-hidden="true">
+        <div class="head"><div><h2>Recettes</h2><p class="num">112 recettes</p></div><span class="gbtn glass"><svg class="i"><use href="#i-plus"/></svg></span></div>
+        <div class="list">
+          <div class="item"><img class="thumb" src="img/chimichurri.jpg" alt=""><div class="txt"><span class="t">Bavette grillée &amp; sauce chimichurri</span><span class="st">avec une purée de patate douce</span></div></div>
+          <div class="item"><img class="thumb" src="img/bobun.jpg" alt=""><div class="txt"><span class="t">Bò bún vietnamien au bœuf sauté</span><span class="st">avec des nouilles de riz &amp; des cacahuètes</span></div></div>
+          <div class="item"><img class="thumb" src="img/azteca.jpg" alt=""><div class="txt"><span class="t">Azteca Bowl : poulet, avocat &amp; sauce yaourt</span><span class="st">garni de patate douce</span></div></div>
+          <div class="item"><img class="thumb" src="img/bavette.jpg" alt=""><div class="txt"><span class="t">Bavette et beurre aux fines herbes</span><span class="st">avec des tomates au four</span></div></div>
+        </div>
+      </div>
+      <div class="scrim"></div>
+      <div class="sheet glass" role="dialog" aria-label="Ajouter une recette">
+        <span class="grabber"></span>
+        <div class="sheet-head"><b>Ajouter une recette</b><button class="gbtn glass" aria-label="Fermer"><svg class="i s"><use href="#i-x"/></svg></button></div>
+        <div class="opts">
+          <div class="big-row"><span class="ic"><svg class="i"><use href="#i-link"/></svg></span><span class="grow"><b>Lien HelloFresh</b><span>Photo, ingrédients, étapes et nutrition, sans rien retaper</span></span><svg class="i s chev"><use href="#i-chev"/></svg></div>
+          <div class="big-row"><span class="ic"><svg class="i"><use href="#i-camera"/></svg></span><span class="grow"><b>Scanner un feuillet</b><span>Photographiez le recto puis le verso de la fiche papier</span></span><svg class="i s chev"><use href="#i-chev"/></svg></div>
+          <div class="big-row"><span class="ic"><svg class="i"><use href="#i-pencil"/></svg></span><span class="grow"><b>Saisie manuelle</b><span>Pour une recette qui ne vient pas de HelloFresh</span></span><svg class="i s chev"><use href="#i-chev"/></svg></div>
+        </div>
+        <div class="paste">
+          <div class="field"><svg class="i s" style="color:var(--color-text-tertiary)"><use href="#i-link"/></svg><span>hellofresh.fr/recipes/bo-bun-vietnamien…</span></div>
+          <button class="btn-primary">Importer</button>
+        </div>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ===================== 6. Vérifier un scan ===================== -->
+  <figure class="shot">
+    <figcaption><b>Vérifier un scan</b><span>Après l'OCR : lignes douteuses signalées, ou bascule vers le lien HelloFresh.</span></figcaption>
+    <div class="phone">
+      <div class="status" data-status></div><div class="edge" style="height:112px"></div>
+      <div class="toolbar">
+        <button class="gbtn glass" aria-label="Annuler"><svg class="i"><use href="#i-x"/></svg></button>
+        <b>Vérifier</b>
+        <button class="gbtn glass tint" aria-label="Enregistrer"><svg class="i"><use href="#i-check"/></svg></button>
+      </div>
+      <div class="scroll" style="padding-top:104px">
+        <div class="banner">
+          <p>Recette reconnue : <b>Bò bún vietnamien au bœuf sauté</b>. Retrouvez-la sur HelloFresh pour un import sans erreur.</p>
+          <div class="actions">
+            <button class="btn-secondary"><svg class="i s"><use href="#i-out"/></svg>Chercher sur HelloFresh</button>
+            <button class="btn-secondary"><svg class="i s"><use href="#i-paste"/></svg>Coller le lien</button>
+          </div>
+        </div>
+        <div class="section-label">Feuillet</div>
+        <div class="scans">
+          <div class="scan"><i class="w"></i><i></i><i></i><i style="width:70%"></i><i></i><i style="width:80%"></i><span>Recto</span></div>
+          <div class="scan"><i class="w"></i><i></i><i style="width:85%"></i><i></i><i></i><i style="width:60%"></i><span>Verso</span></div>
+        </div>
+        <div class="section-label">Recette</div>
+        <div class="group form">
+          <div class="row"><span class="lab">Titre</span><span class="inp">Bò bún vietnamien au bœuf sauté</span></div>
+          <div class="row"><span class="lab">Sous-titre</span><span class="inp">avec des nouilles de riz &amp; des cacahuètes</span></div>
+          <div class="row"><span class="lab">Durée</span><span class="inp num">45 min</span></div>
+          <div class="row"><span class="lab">Personnes</span><span class="inp num">2</span></div>
+        </div>
+        <div class="section-label">Ingrédients <em>2 lignes à vérifier</em></div>
+        <div class="group ingr-edit">
+          <div class="row"><span class="qty">2</span><span class="inp">Tête d'ail</span></div>
+          <div class="row"><span class="qty">2</span><span class="inp">Échalote</span></div>
+          <div class="row"><span class="qty">1 paquet</span><span class="inp">Émincés de bœuf</span></div>
+          <div class="row warn"><span class="qty">1 sachet</span><span class="inp">Sauce po<mark>1</mark>sson</span><span class="flag">À vérifier</span></div>
+          <div class="row warn"><span class="qty"><mark>1OO</mark> g</span><span class="inp">Nouilles plates de riz</span><span class="flag">À vérifier</span></div>
+          <div class="row"><span class="qty">1</span><span class="inp">Carotte</span></div>
+          <div class="row"><span class="qty">½ sachet</span><span class="inp">Menthe</span></div>
+          <div class="row add-line"><svg class="i s"><use href="#i-plus"/></svg><span class="inp">Ajouter un ingrédient</span></div>
+        </div>
+        <div class="section-label">Texte reconnu</div>
+        <div class="group"><div class="row disclosure"><span class="grow">Afficher le texte brut de l'OCR</span><svg class="i s"><use href="#i-chev"/></svg></div></div>
+      </div>
+    </div>
+  </figure>
+
+  <!-- ===================== 7. Réglages ===================== -->
+  <figure class="shot">
+    <figcaption><b>Réglages</b><span>Apparence (fonctionnelle ici), basiques, foyer, export.</span></figcaption>
+    <div class="phone">
+      <div class="status" data-status></div><div class="edge"></div>
+      <div class="scroll">
+        <div class="head"><h2>Réglages</h2></div>
+        <div class="section-label">Apparence</div>
+        <div style="margin:0 16px">
+          <div class="seg full" role="group" aria-label="Apparence" data-theme-switch>
+            <button type="button" data-value="system" aria-pressed="true">Système</button>
+            <button type="button" data-value="light" aria-pressed="false">Clair</button>
+            <button type="button" data-value="dark" aria-pressed="false">Sombre</button>
+          </div>
+        </div>
+        <div class="section-label">Mon frigo</div>
+        <div class="group">
+          <div class="row"><span class="grow">Toujours disponibles</span><span class="val num">9 ingrédients</span><svg class="i s chev"><use href="#i-chev"/></svg></div>
+        </div>
+        <p class="note">Ils ne comptent jamais comme manquants : sel, poivre, huile d'olive, huile de tournesol, beurre, sucre, farine, vinaigre, eau.</p>
+        <div class="section-label">Foyer</div>
+        <div class="group">
+          <div class="row"><span class="avatar">V</span><span class="grow">Vous</span><span class="val">Connecté</span></div>
+          <div class="row"><span class="avatar">C</span><span class="grow">Votre conjointe</span><span class="val">Il y a 2 h</span></div>
+        </div>
+        <p class="note">Notes, commentaires et photos sont partagés entre vous deux.</p>
+        <div class="section-label">Données</div>
+        <div class="group">
+          <div class="row"><span class="grow">Exporter toutes les recettes</span><span class="val">JSON</span><svg class="i s chev"><use href="#i-chev"/></svg></div>
+          <div class="row"><span class="grow">Synchronisé</span><span class="val num">il y a 2 min</span></div>
+        </div>
+        <p class="note num">112 recettes · 248 photos</p>
+        <div class="group" style="margin-top:24px"><div class="row"><button class="grow danger" style="text-align:left">Se déconnecter</button></div></div>
+        <p class="version num">Popote · version 1.0.0</p>
+      </div>
+      <div class="tabs" data-tabs="reglages"></div>
+    </div>
+  </figure>
+
+</main>
+
+<script>
+/* Barre d'état et barre d'onglets : un seul gabarit pour tous les écrans. */
+(function () {
+  const status = document.getElementById('statusbar').innerHTML;
+  document.querySelectorAll('[data-status]').forEach(el => { el.innerHTML = status; });
+  const tabs = [
+    { id: 'recettes', label: 'Recettes', icon: 'i-book' },
+    { id: 'frigo', label: 'Mon frigo', icon: 'i-basket' },
+    { id: 'reglages', label: 'Réglages', icon: 'i-gear' },
+  ];
+  document.querySelectorAll('[data-tabs]').forEach(el => {
+    const current = el.dataset.tabs;
+    const items = tabs.map(t =>
+      '<a href="#"' + (t.id === current ? ' aria-current="page"' : '') + '><svg class="i"><use href="#' + t.icon + '"/></svg>' + t.label + '</a>'
+    ).join('');
+    el.innerHTML = '<nav class="tabbar glass" aria-label="Onglets">' + items + '</nav>' +
+      '<a href="#" class="tab-search glass" aria-label="Rechercher"><svg class="i"><use href="#i-search"/></svg></a>';
+  });
+})();
+
+/* Bascule de thème : pose data-theme sur <html>, ou le retire pour suivre le système. */
+(function () {
+  const root = document.documentElement;
+  const switches = document.querySelectorAll('[data-theme-switch]');
+  function apply(value) {
+    if (value === 'system') root.removeAttribute('data-theme');
+    else root.setAttribute('data-theme', value);
+    switches.forEach(group => group.querySelectorAll('button').forEach(b => {
+      b.setAttribute('aria-pressed', String(b.dataset.value === value));
+    }));
+    try { localStorage.setItem('maquettes-theme', value); } catch (e) {}
+  }
+  switches.forEach(group => group.addEventListener('click', e => {
+    const b = e.target.closest('button[data-value]');
+    if (b) apply(b.dataset.value);
+  }));
+  let saved = null;
+  try { saved = localStorage.getItem('maquettes-theme'); } catch (e) {}
+  if (saved) apply(saved);
+})();
+
+/* Notation par demi-étoiles : moitié gauche d'une étoile = x,5 ; toucher la note actuelle l'efface. */
+(function () {
+  const el = document.querySelector('[data-rating]');
+  const label = document.querySelector('[data-rating-label]');
+  const stars = [];
+  for (let i = 0; i < 5; i++) {
+    const s = document.createElement('span');
+    s.className = 'star';
+    s.innerHTML = '<svg class="e" viewBox="0 0 24 24"><use href="#i-star"/></svg><svg class="f" viewBox="0 0 24 24"><use href="#i-star"/></svg>';
+    el.appendChild(s);
+    stars.push(s);
+  }
+  const fmt = v => String(v).replace('.', ',');
+  function render(v) {
+    stars.forEach((s, i) => {
+      const fill = Math.max(0, Math.min(1, v - i));
+      s.querySelector('.f').style.clipPath = 'inset(0 ' + (100 - fill * 100) + '% 0 0)';
+    });
+    el.dataset.rating = v;
+    el.setAttribute('aria-valuenow', v);
+    el.setAttribute('aria-valuetext', v ? fmt(v) + ' sur 5' : 'Non notée');
+    label.innerHTML = v ? fmt(v) + '<small> / 5</small>' : '<small>Non notée</small>';
+  }
+  el.addEventListener('click', e => {
+    const s = e.target.closest('.star');
+    if (!s) return;
+    const i = stars.indexOf(s);
+    const r = s.getBoundingClientRect();
+    let v = i + (e.clientX - r.left < r.width / 2 ? 0.5 : 1);
+    if (v === Number(el.dataset.rating)) v = 0;
+    render(v);
+  });
+  el.addEventListener('keydown', e => {
+    const v = Number(el.dataset.rating);
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') { render(Math.min(5, v + 0.5)); e.preventDefault(); }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') { render(Math.max(0, v - 0.5)); e.preventDefault(); }
+  });
+  render(Number(el.dataset.rating));
+})();
+</script>

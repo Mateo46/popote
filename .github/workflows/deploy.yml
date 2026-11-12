@@ -1,0 +1,57 @@
+# Publie l'application sur GitHub Pages à chaque push sur main.
+#
+# Prérequis (une fois) dans le dépôt GitHub :
+#   Settings > Pages > Source : « GitHub Actions »
+#   Settings > Secrets and variables > Actions > Variables :
+#     VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY (valeurs publiques par conception)
+name: Déploiement
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un seul déploiement à la fois ; le plus récent l'emporte.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Build
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+          # GitHub Pages sert le site sous /<nom-du-dépôt>/.
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+      # GitHub Pages ne connaît pas le routage côté client : toute adresse inconnue
+      # renvoie 404.html, qui est donc une copie de l'application.
+      - run: cp dist/index.html dist/404.html
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

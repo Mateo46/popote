@@ -1,0 +1,6 @@
+.link {
+  display: inline-block;
+  margin: var(--space-2) var(--space-4) 0;
+  color: var(--color-accent);
+  font: var(--text-body);
+}

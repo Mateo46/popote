@@ -1,0 +1,22 @@
+.control {
+  display: flex;
+  background: var(--color-fill);
+  border-radius: 9px;
+  padding: 2px;
+}
+
+.segment {
+  flex: 1;
+  min-height: 32px;
+  border-radius: 7px;
+  font: var(--text-footnote);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: background-color var(--duration);
+}
+
+.segment[aria-checked='true'] {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12);
+}

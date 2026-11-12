@@ -1,0 +1,28 @@
+# L'offre gratuite de Supabase met en pause un projet sans activité pendant 7 jours.
+# Ce workflow fait une petite lecture deux fois par semaine pour l'éviter.
+# Sans session, la lecture renvoie une erreur de droits (RLS) : c'est normal, la requête
+# atteint quand même la base, ce qui compte comme activité.
+name: Supabase keepalive
+
+on:
+  schedule:
+    - cron: '17 6 * * 1,4' # lundi et jeudi, 6 h 17 UTC
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Requête de lecture
+        env:
+          URL: ${{ vars.VITE_SUPABASE_URL }}
+          KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          status=$(curl -s -o /dev/null -w '%{http_code}' \
+            -H "apikey: $KEY" "$URL/rest/v1/pantry_staples?select=normalized&limit=1")
+          echo "Réponse de Supabase : HTTP $status"
+          # 5xx ou absence de réponse = projet en pause ou en panne : on fait échouer le job
+          # pour recevoir l'e-mail de GitHub.
+          if [ "$status" = "000" ] || [ "$status" -ge 500 ]; then exit 1; fi

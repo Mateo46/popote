@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="Nos recettes HelloFresh, notées et faciles à retrouver." />
+    <!-- Apparence iOS en mode app (écran d'accueil) -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Popote" />
+    <meta name="theme-color" content="#f4f5f3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0c0e0d" media="(prefers-color-scheme: dark)" />
+    <title>Popote</title>
+    <script>
+      // Applique le thème choisi avant le premier rendu, pour éviter un flash clair/sombre.
+      // Doit rester synchronisé avec la clé utilisée dans src/ui/theme.ts.
+      try {
+        var t = localStorage.getItem('popote.theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

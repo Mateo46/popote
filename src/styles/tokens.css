@@ -1,0 +1,156 @@
+/*
+ * Design tokens — source de vérité des couleurs, typographies, espacements et rayons.
+ * Règles d'usage : docs/design.md.
+ *
+ * Thème : par défaut on suit le réglage du téléphone (prefers-color-scheme).
+ * Le réglage « Clair » / « Sombre » de l'app pose data-theme="light" | "dark"
+ * sur <html>, ce qui l'emporte dans les deux sens.
+ * Ne jamais utiliser de couleur littérale dans un composant : toujours un token.
+ */
+
+:root {
+  /* Couleurs — clair. Neutres légèrement teintés vers le vert de l'accent. */
+  --color-bg: #f4f5f3; /* fond de page (listes groupées) */
+  --color-surface: #ffffff; /* lignes de liste, barres, feuilles */
+  --color-fill: #eaece9; /* champs, puces, contrôles segmentés */
+  --color-separator: rgb(24 32 27 / 0.12);
+  --color-text: #131614;
+  --color-text-secondary: #5c635e;
+  --color-text-tertiary: #8b918d;
+  --color-accent: #2c774b; /* « basilic » : actions, onglet actif */
+  --color-on-accent: #ffffff;
+  --color-accent-soft: #e1efe6;
+  --color-star: #e39d17; /* étoiles pleines */
+  --color-star-empty: #d3d7d4;
+  --color-warning: #9a5b00; /* champ OCR à vérifier (texte) */
+  --color-warning-soft: #fbefd8;
+  --color-danger: #c4382c;
+  --color-overlay: rgb(255 255 255 / 0.92); /* repli opaque du verre */
+  --color-scrim: rgb(12 16 14 / 0.28); /* voile derrière une feuille */
+
+  /* Liquid Glass (iOS 26/27) — réservé à la couche de navigation : barre d'onglets,
+     boutons flottants, barres d'outils, feuilles. Jamais sur le contenu. */
+  --glass-bg: rgb(255 255 255 / 0.58);
+  --glass-tint-accent: rgb(44 119 75 / 0.88); /* bouton de validation teinté */
+  --glass-selected: rgb(19 22 20 / 0.07); /* pastille de l'onglet actif */
+  --glass-edge: rgb(0 0 0 / 0.1); /* bord assombri (iOS 27) */
+  --glass-highlight: rgb(255 255 255 / 0.95); /* reflet spéculaire */
+  --glass-shadow: 0 8px 28px rgb(18 28 22 / 0.14), 0 1px 3px rgb(18 28 22 / 0.08);
+  --glass-filter: blur(16px) saturate(180%);
+  --edge-fade: rgb(244 245 243 / 0.92); /* fondu haut quand on défile */
+  color-scheme: light;
+
+  /* Typographie : police système (SF Pro sur iPhone). */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  --font-rounded: ui-rounded, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  /* Échelle typographique (taille / interligne), calquée sur les styles iOS. */
+  --text-large-title: 700 2.125rem/1.2 var(--font-sans); /* 34 px */
+  --text-title: 700 1.375rem/1.27 var(--font-sans); /* 22 px */
+  --text-headline: 600 1.0625rem/1.3 var(--font-sans); /* 17 px */
+  --text-body: 400 1.0625rem/1.4 var(--font-sans); /* 17 px */
+  --text-subhead: 400 0.9375rem/1.35 var(--font-sans); /* 15 px */
+  --text-footnote: 400 0.8125rem/1.35 var(--font-sans); /* 13 px */
+  --text-caption: 500 0.6875rem/1.2 var(--font-sans); /* 11 px, labels en capitales */
+  --text-stat: 600 1.25rem/1.1 var(--font-rounded); /* chiffres clés de la fiche */
+
+  /* Espacements : grille de 4 px. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Rayons : deux valeurs seulement, plus le cercle. */
+  --radius-s: 8px; /* vignettes, champs, puces */
+  --radius-m: 12px; /* groupes de lignes, feuilles, photos */
+  --radius-full: 999px;
+
+  --tap-min: 44px; /* cible tactile minimale */
+  --duration: 160ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-bg: #0c0e0d;
+    --color-surface: #171a18;
+    --color-fill: #232725;
+    --color-separator: rgb(222 236 227 / 0.12);
+    --color-text: #edf0ee;
+    --color-text-secondary: #a1a9a4;
+    --color-text-tertiary: #6f7772;
+    --color-accent: #5cbd85;
+    --color-on-accent: #07150c;
+    --color-accent-soft: #16281d;
+    --color-star: #f0b43c;
+    --color-star-empty: #3a403c;
+    --color-warning: #f0b43c;
+    --color-warning-soft: #2b2312;
+    --color-danger: #ef6a5e;
+    --color-overlay: rgb(23 26 24 / 0.9);
+    --color-scrim: rgb(0 0 0 / 0.5);
+    --glass-bg: rgb(44 49 46 / 0.52);
+    --glass-tint-accent: rgb(92 189 133 / 0.9);
+    --glass-selected: rgb(255 255 255 / 0.1);
+    --glass-edge: rgb(0 0 0 / 0.55);
+    --glass-highlight: rgb(255 255 255 / 0.22);
+    --glass-shadow: 0 8px 28px rgb(0 0 0 / 0.45), 0 1px 3px rgb(0 0 0 / 0.3);
+    --edge-fade: rgb(12 14 13 / 0.92);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #0c0e0d;
+  --color-surface: #171a18;
+  --color-fill: #232725;
+  --color-separator: rgb(222 236 227 / 0.12);
+  --color-text: #edf0ee;
+  --color-text-secondary: #a1a9a4;
+  --color-text-tertiary: #6f7772;
+  --color-accent: #5cbd85;
+  --color-on-accent: #07150c;
+  --color-accent-soft: #16281d;
+  --color-star: #f0b43c;
+  --color-star-empty: #3a403c;
+  --color-warning: #f0b43c;
+  --color-warning-soft: #2b2312;
+  --color-danger: #ef6a5e;
+  --color-overlay: rgb(23 26 24 / 0.9);
+  --color-scrim: rgb(0 0 0 / 0.5);
+  --glass-bg: rgb(44 49 46 / 0.52);
+  --glass-tint-accent: rgb(92 189 133 / 0.9);
+  --glass-selected: rgb(255 255 255 / 0.1);
+  --glass-edge: rgb(0 0 0 / 0.55);
+  --glass-highlight: rgb(255 255 255 / 0.22);
+  --glass-shadow: 0 8px 28px rgb(0 0 0 / 0.45), 0 1px 3px rgb(0 0 0 / 0.3);
+  --edge-fade: rgb(12 14 13 / 0.92);
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration: 0ms;
+  }
+}
+
+/* Réglages d'accessibilité iOS « Réduire la transparence » et « Augmenter le contraste » :
+   le verre devient une surface opaque, le bord se renforce. */
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass-bg: var(--color-overlay);
+    --glass-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --glass-bg: var(--color-surface);
+    --glass-filter: none;
+    --glass-edge: var(--color-text-tertiary);
+  }
+}

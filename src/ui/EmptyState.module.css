@@ -1,0 +1,16 @@
+.empty {
+  margin: var(--space-8) var(--space-4) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  max-width: 34ch;
+}
+
+.title {
+  font: var(--text-headline);
+}
+
+.body {
+  font: var(--text-subhead);
+  color: var(--color-text-secondary);
+}

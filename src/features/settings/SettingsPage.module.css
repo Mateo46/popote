@@ -1,0 +1,35 @@
+.section {
+  padding-top: var(--space-5);
+}
+
+.label {
+  font: var(--text-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+  padding: 0 var(--space-4) var(--space-2);
+}
+
+.inset {
+  margin: 0 var(--space-4);
+}
+
+.signOutRow {
+  position: relative;
+  border-top: 0.5px solid var(--color-separator);
+  margin-left: var(--space-4);
+}
+
+.signOut {
+  width: 100%;
+  min-height: 48px;
+  text-align: left;
+  color: var(--color-danger);
+}
+
+.version {
+  text-align: center;
+  font: var(--text-footnote);
+  color: var(--color-text-tertiary);
+  padding-top: var(--space-6);
+}

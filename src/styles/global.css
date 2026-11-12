@@ -1,0 +1,50 @@
+/*
+ * Styles globaux : fond, typographie de base et utilitaires partagés.
+ * Les styles propres à un composant vivent dans son fichier .module.css.
+ */
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font: var(--text-body);
+  -webkit-font-smoothing: antialiased;
+  /* Supprime le surlignage gris d'iOS au toucher : chaque contrôle a son propre état actif. */
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/*
+ * Liquid Glass — réservé à la couche de navigation (barre d'onglets, boutons flottants,
+ * feuilles). Ne jamais l'appliquer au contenu. Voir docs/design.md.
+ */
+.glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-filter);
+  backdrop-filter: var(--glass-filter);
+  box-shadow:
+    inset 0 1px 0 var(--glass-highlight),
+    inset 0 0 0 0.5px var(--glass-highlight),
+    0 0 0 0.5px var(--glass-edge),
+    var(--glass-shadow);
+}
+
+/* Texte lu par VoiceOver mais invisible à l'écran. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
