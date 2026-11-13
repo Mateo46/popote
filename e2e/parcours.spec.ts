@@ -51,11 +51,13 @@ test('notation d’une recette par demi-étoile', async ({ page }) => {
   const stars = page.getByRole('slider', { name: 'Note de la recette' });
   await expect(stars).toHaveAttribute('aria-valuetext', 'Non notée');
 
-  // Moitié gauche de la 4e étoile : 3,5.
+  // Moitié gauche de la 4e étoile : 3,5. Le clic positionné de Playwright fait défiler
+  // jusqu'à l'étoile et attend qu'elle soit stable (des coordonnées brutes pourraient
+  // tomber à côté si la page bouge encore).
   const fourth = page.getByTestId('star-4');
   const box = await fourth.boundingBox();
   if (!box) throw new Error('Étoile introuvable');
-  await page.mouse.click(box.x + box.width * 0.25, box.y + box.height / 2);
+  await fourth.click({ position: { x: box.width * 0.25, y: box.height / 2 } });
 
   await expect(stars).toHaveAttribute('aria-valuetext', '3,5 sur 5');
   await expect.poll(() => state.recipePatches).toContainEqual({ rating: 3.5 });
