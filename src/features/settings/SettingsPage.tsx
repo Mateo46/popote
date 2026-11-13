@@ -1,13 +1,16 @@
-/** Onglet Réglages : apparence, basiques de « Mon frigo », compte et version. */
+/** Onglet Réglages : apparence, basiques de « Mon frigo », export des données, compte et version. */
+import { useState } from 'react';
 import { Link } from 'react-router';
-import { signOut, useAuth } from '../../data/auth';
-import { usePantryEntries } from '../../data/hooks';
+import { useAuth } from '../../data/auth';
+import { buildExport, shareExport } from '../../data/exportData';
+import { usePantryEntries, useRecipes, useSignOut } from '../../data/hooks';
 import { strings } from '../../strings';
 import { Group, Row } from '../../ui/Group';
 import { Icon } from '../../ui/Icon';
 import { Screen } from '../../ui/Screen';
 import { SegmentedControl } from '../../ui/SegmentedControl';
 import { setThemePreference, useThemePreference, type ThemePreference } from '../../ui/theme';
+import { useOnline } from '../../ui/useOnline';
 import styles from './SettingsPage.module.css';
 
 const themeOptions: { value: ThemePreference; label: string }[] = [
@@ -20,6 +23,24 @@ export function SettingsPage() {
   const auth = useAuth();
   const theme = useThemePreference();
   const { data: staples } = usePantryEntries('pantry_staples');
+  const signOut = useSignOut();
+  const { data: recipes } = useRecipes();
+  const online = useOnline();
+  const [exporting, setExporting] = useState(false);
+  const [exportStatus, setExportStatus] = useState<string | null>(null);
+
+  async function runExport() {
+    setExporting(true);
+    setExportStatus(null);
+    try {
+      const shared = await shareExport(await buildExport());
+      if (shared) setExportStatus(strings.settings.exportDone);
+    } catch {
+      setExportStatus(strings.settings.exportFailed);
+    } finally {
+      setExporting(false);
+    }
+  }
 
   return (
     <Screen title={strings.settings.title}>
@@ -43,6 +64,22 @@ export function SettingsPage() {
           </span>
           <Icon name="chevron" size={16} />
         </Link>
+      </Group>
+
+      <Group
+        label={strings.settings.data}
+        footer={exportStatus ?? strings.settings.exportNote(recipes?.length ?? 0)}
+      >
+        <button
+          type="button"
+          className={styles.linkRow}
+          disabled={exporting || !online}
+          onClick={() => void runExport()}
+        >
+          <span>{exporting ? strings.settings.exporting : strings.settings.export}</span>
+          <span className={styles.value}>JSON</span>
+          <Icon name="chevron" size={16} />
+        </button>
       </Group>
 
       <Group label={strings.settings.account}>

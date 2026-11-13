@@ -6,6 +6,7 @@
  */
 import { Navigate, Outlet, useLocation } from 'react-router';
 import { useAuth } from '../../data/auth';
+import { OfflineBanner } from '../../ui/OfflineBanner';
 import { TabBar } from '../../ui/TabBar';
 
 export function AppShell() {
@@ -24,6 +25,7 @@ export function AppShell() {
 
   return (
     <>
+      <OfflineBanner />
       <Outlet />
       {!isForm && !isSearch && <TabBar />}
     </>

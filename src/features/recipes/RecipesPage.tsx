@@ -11,6 +11,7 @@ import { strings } from '../../strings';
 import { Button } from '../../ui/Button';
 import { EmptyState } from '../../ui/EmptyState';
 import { GlassButton } from '../../ui/GlassButton';
+import { useOnline } from '../../ui/useOnline';
 import { Screen } from '../../ui/Screen';
 import { RecipeList } from './RecipeList';
 import styles from './RecipesPage.module.css';
@@ -25,10 +26,16 @@ export function RecipesPage() {
   const sort: RecipeSort = isSort(requested) ? requested : 'rating';
   const { data: recipes, isPending, isError, refetch } = useRecipes();
   const [adding, setAdding] = useState(false);
+  const online = useOnline();
 
   const addButton = (
     <>
-      <GlassButton icon="plus" label={strings.recipes.add} onClick={() => setAdding(true)} />
+      <GlassButton
+        icon="plus"
+        label={online ? strings.recipes.add : strings.offline.actionDisabled}
+        disabled={!online}
+        onClick={() => setAdding(true)}
+      />
       <AddSheet open={adding} onClose={() => setAdding(false)} />
     </>
   );

@@ -16,7 +16,7 @@
   --color-separator: rgb(24 32 27 / 0.12);
   --color-text: #131614;
   --color-text-secondary: #5c635e;
-  --color-text-tertiary: #8b918d;
+  --color-text-tertiary: #646b66; /* 4,5:1 minimum (WCAG AA) */
   --color-accent: #2c774b; /* « basilic » : actions, onglet actif */
   --color-on-accent: #ffffff;
   --color-accent-soft: #e1efe6;
@@ -82,7 +82,7 @@
     --color-separator: rgb(222 236 227 / 0.12);
     --color-text: #edf0ee;
     --color-text-secondary: #a1a9a4;
-    --color-text-tertiary: #6f7772;
+    --color-text-tertiary: #8a928d;
     --color-accent: #5cbd85;
     --color-on-accent: #07150c;
     --color-accent-soft: #16281d;
@@ -111,7 +111,7 @@
   --color-separator: rgb(222 236 227 / 0.12);
   --color-text: #edf0ee;
   --color-text-secondary: #a1a9a4;
-  --color-text-tertiary: #6f7772;
+  --color-text-tertiary: #8a928d;
   --color-accent: #5cbd85;
   --color-on-accent: #07150c;
   --color-accent-soft: #16281d;

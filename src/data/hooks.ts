@@ -8,8 +8,10 @@
  */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { Photo, Recipe, RecipeInput, Step } from '../domain/recipe';
+import { signOut } from './auth';
 import { fetchRemoteImage } from './images';
 import { importFromHellofresh } from './importHellofresh';
+import { clearOfflineCache } from './offline';
 import * as pantry from './pantry';
 import * as api from './recipes';
 
@@ -240,4 +242,17 @@ export function usePantryMutations(table: pantry.PantryTable) {
   });
 
   return { add, remove, clear };
+}
+
+/**
+ * Déconnexion de l'appareil : session fermée, cache en mémoire vidé et cache hors ligne
+ * effacé, pour que les recettes ne restent pas sur un téléphone déconnecté.
+ */
+export function useSignOut() {
+  const client = useQueryClient();
+  return async () => {
+    await signOut();
+    client.clear();
+    await clearOfflineCache();
+  };
 }

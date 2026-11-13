@@ -6,7 +6,17 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist', 'dev-dist', 'mockups', 'coverage'] },
+  {
+    ignores: [
+      'dist',
+      'dist-e2e',
+      'dev-dist',
+      'mockups',
+      'coverage',
+      'test-results',
+      'playwright-report',
+    ],
+  },
   {
     files: ['**/*.{ts,tsx}'],
     extends: [js.configs.recommended, ...tseslint.configs.strict],
@@ -40,8 +50,8 @@ export default tseslint.config(
     rules: { 'no-restricted-imports': 'off' },
   },
   {
-    // Edge Functions Supabase : environnement Deno.
-    files: ['supabase/functions/**/*.ts'],
+    // Code exécuté hors navigateur : Edge Functions (Deno) et tests de parcours (Node).
+    files: ['supabase/functions/**/*.ts', 'e2e/**/*.ts', 'playwright.config.ts'],
     languageOptions: { globals: { ...globals.node, Deno: 'readonly' } },
   },
 );

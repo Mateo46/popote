@@ -45,11 +45,36 @@ export default defineConfig(({ mode }) => {
           // Toute navigation hors ligne retombe sur l'application (routage côté client).
           navigateFallback: `${base}index.html`,
           globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
+          runtimeCaching: [
+            {
+              // Photos du bucket privé : leur adresse contient un jeton qui change à chaque
+              // signature. On les met en cache sous leur chemin seul, pour les retrouver
+              // hors connexion quel que soit le jeton.
+              urlPattern: ({ url }) => url.pathname.includes('/storage/v1/object/sign/photos/'),
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'popote-photos',
+                expiration: { maxEntries: 1500, maxAgeSeconds: 60 * 60 * 24 * 90 },
+                cacheableResponse: { statuses: [200] },
+                plugins: [
+                  {
+                    cacheKeyWillBeUsed: async ({ request }) => {
+                      const url = new URL(request.url);
+                      url.search = '';
+                      return url.href;
+                    },
+                  },
+                ],
+              },
+            },
+          ],
         },
       }),
     ],
     test: {
       environment: 'jsdom',
+      // Les tests de parcours (e2e/) sont lancés par Playwright, pas par Vitest.
+      exclude: ['e2e/**', 'node_modules/**'],
       setupFiles: ['./src/test/setup.ts'],
       css: { modules: { classNameStrategy: 'non-scoped' } },
     },

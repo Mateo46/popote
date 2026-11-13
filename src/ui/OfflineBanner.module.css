@@ -1,0 +1,16 @@
+/* Pastille en verre sous la barre d'état, par-dessus le contenu. */
+.banner {
+  position: fixed;
+  z-index: 30;
+  top: calc(env(safe-area-inset-top) + var(--space-2));
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100vw - 32px);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font: var(--text-footnote);
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: center;
+  pointer-events: none;
+}

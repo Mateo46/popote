@@ -27,3 +27,8 @@ supabase/.branches
 .claude/
 
 
+
+# Tests de parcours (Playwright)
+dist-e2e
+test-results
+playwright-report

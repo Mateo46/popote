@@ -228,9 +228,29 @@ export const strings = {
     themeLight: 'Clair',
     themeDark: 'Sombre',
     pantry: 'Mon frigo',
+    data: 'Données',
+    export: 'Exporter toutes les recettes',
+    exporting: 'Préparation de l’export…',
+    exportNote: (n: number) =>
+      `${n} recette${n > 1 ? 's' : ''}, avec notes, commentaires, historique et frigo. Les photos restent dans Supabase (le fichier donne leurs chemins).`,
+    exportDone: 'Export prêt.',
+    exportFailed: 'L’export a échoué. Vérifiez la connexion internet.',
     account: 'Compte',
     signOut: 'Se déconnecter',
     version: (version: string) => `${appName} · version ${version}`,
+  },
+
+  offline: {
+    banner: 'Hors connexion : consultation seule',
+    actionDisabled: 'Indisponible hors connexion',
+  },
+
+  error: {
+    title: 'Un problème est survenu',
+    body: 'L’écran n’a pas pu s’afficher. Rechargez l’application ; si le problème revient, notez ce que vous faisiez.',
+    outdatedTitle: 'Nouvelle version disponible',
+    outdatedBody: 'L’application a été mise à jour. Rechargez-la pour continuer.',
+    reload: 'Recharger',
   },
 
   config: {

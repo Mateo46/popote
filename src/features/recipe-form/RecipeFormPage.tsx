@@ -16,6 +16,7 @@ import type { Recipe } from '../../domain/recipe';
 import { strings } from '../../strings';
 import { GlassButton } from '../../ui/GlassButton';
 import { SegmentedControl } from '../../ui/SegmentedControl';
+import { useOnline } from '../../ui/useOnline';
 import {
   draftFromImport,
   draftFromRecipe,
@@ -83,6 +84,7 @@ function RecipeForm({ recipe, imported }: RecipeFormProps) {
   const [draft, setDraft] = useState<RecipeDraft>(initial.draft);
   const [photos, setPhotos] = useState<PendingPhoto[]>(initial.photos);
   const [errors, setErrors] = useState<string[]>([]);
+  const online = useOnline();
   const saving = create.isPending || update.isPending || upload.isPending || copySteps.isPending;
   const serverError = create.error ?? update.error;
 
@@ -168,8 +170,14 @@ function RecipeForm({ recipe, imported }: RecipeFormProps) {
         <GlassButton
           icon="check"
           tint
-          label={saving ? strings.form.saving : strings.form.save}
-          disabled={saving}
+          label={
+            online
+              ? saving
+                ? strings.form.saving
+                : strings.form.save
+              : strings.offline.actionDisabled
+          }
+          disabled={saving || !online}
           onClick={() => void handleSubmit()}
         />
       </div>

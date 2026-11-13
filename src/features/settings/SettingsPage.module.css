@@ -54,3 +54,13 @@
   color: var(--color-text-tertiary);
   padding-top: var(--space-6);
 }
+
+button.linkRow {
+  width: 100%;
+  text-align: left;
+  font: var(--text-body);
+}
+
+button.linkRow:disabled {
+  opacity: 0.5;
+}

@@ -372,6 +372,13 @@ _Acceptation_ : nombre de recettes importées = nombre trouvé dans l'historique
 
 ### Phase 9 — Finitions
 
+✅ **Terminée le 13/11/2026.** Consultation hors ligne (cache IndexedDB + photos en cache du
+service worker), bandeau hors connexion, actions d'écriture désactivées, cache effacé à la
+déconnexion ; export JSON (menu de partage iOS) ; écran d'erreur, y compris après une mise
+à jour ; écrans découpés à la demande (code principal 647 Ko → 264 Ko) ; contrastes du
+texte tertiaire corrigés (WCAG AA) ; 3 parcours Playwright en thèmes clair et sombre avec
+contrôle axe, lancés en CI ; README complété.
+
 - Lecture hors ligne et bandeau « hors connexion » ; export JSON ; états vides, de
   chargement et d'erreur de tous les écrans.
 - Passe d'accessibilité et de performance sur iPhone ; 2–3 parcours Playwright (connexion,

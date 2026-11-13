@@ -3,3 +3,6 @@ dev-dist
 coverage
 package-lock.json
 mockups
+dist-e2e
+test-results
+playwright-report
