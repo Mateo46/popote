@@ -109,6 +109,31 @@ fiable. Le dernier état du code est dans l'historique git (commit `c60f0fe` : �
 scan, `parseOcr.ts`, copie des fichiers OCR au build). La valeur `scan` reste autorisée en
 base pour `recipes.source` et `recipe_photos.kind` (aucune migration utile).
 
+## Import de l'historique (phase 8)
+
+Fait une fois, le 13/11/2026, dans le navigateur intégré :
+
+1. Le propriétaire se connecte lui-même à hellofresh.fr (jamais de mot de passe saisi par
+   l'agent), page « Mes anciennes recettes », tout l'historique chargé via « Voir plus ».
+2. Les adresses des recettes (`websiteURL`) sont lues dans les données déjà chargées par
+   la page. L'API de HelloFresh exige un jeton : elle n'est pas appelée directement.
+3. Chaque adresse passe par l'**import par lien** (Edge Function, puis `draftFromImport`,
+   `draftToInput`, `createRecipe`, copie des photos), exécuté dans l'app connectée. On
+   réutilise exactement le code testé, sans clé `service_role`.
+4. Dédoublonnage sur l'identifiant HelloFresh canonique et sur le titre normalisé, avec
+   2 s de pause entre deux recettes.
+
+Constats :
+
+- Les anciens identifiants redirigent vers la version **actuelle** de la recette, dont le
+  titre ou un ingrédient peut différer de la box livrée (« aiguillettes de poulet »
+  devenues « de dinde », « porc » devenu « poulet »…).
+- Certaines recettes récentes n'ont **aucune photo** chez HelloFresh (`imagePath` vide) :
+  elles sont importées sans photo.
+- Pour un nouvel import en masse, le même procédé s'applique. Un échec ou une page
+  anti-robot doit arrêter la boucle (le code de la phase 8 le faisait sur « captcha »,
+  « robot » ou « 429 »).
+
 ## Écarts au plan initial
 
 - `recipes.difficulty` est un `smallint` (1 à 3) et non un texte : c'est le format de

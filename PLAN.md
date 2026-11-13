@@ -351,6 +351,14 @@ quels ; tests unitaires de `parseOcr.ts` sur des textes OCR réels.
 
 ### Phase 8 — Import de l'historique ⛔
 
+✅ **Terminée le 13/11/2026.** 100 recettes relevées dans « Mes anciennes recettes »
+(20 box, juin 2024 → novembre 2026), **94 recettes distinctes importées**, 0 échec,
+0 doublon. Une seule recette sans photo (HelloFresh n'en fournit pas). **Méthode modifiée**
+par rapport au plan ci-dessous : pas de fichiers JSON ni de clé `service_role`. Chaque
+lien passe par l'import par lien de la phase 6, avec la session Popote du propriétaire
+(voir docs/architecture.md). Limite connue : un ancien identifiant peut rediriger vers la
+version actuelle de la recette, parfois un peu différente de celle livrée.
+
 - Définir le format d'échange : un fichier JSON par recette, conforme au schéma Zod.
 - `scripts/import-json.ts` : valide, dédoublonne, envoie les images, insère. Utilise la
   clé `service_role` lue dans `.env.local` (non versionné). Mode `--dry-run`.
