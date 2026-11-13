@@ -45,16 +45,6 @@ export default defineConfig(({ mode }) => {
           // Toute navigation hors ligne retombe sur l'application (routage côté client).
           navigateFallback: `${base}index.html`,
           globPatterns: ['**/*.{js,css,html,svg,png,ico,webmanifest}'],
-          // Fichiers de lecture des feuillets (~4,5 Mo) : pas de préchargement à
-          // l'installation, mais mise en cache au premier scan.
-          globIgnores: ['ocr/**'],
-          runtimeCaching: [
-            {
-              urlPattern: ({ url }) => url.pathname.startsWith(`${base}ocr/`),
-              handler: 'CacheFirst',
-              options: { cacheName: 'popote-ocr', expiration: { maxEntries: 10 } },
-            },
-          ],
         },
       }),
     ],

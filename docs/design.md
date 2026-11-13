@@ -45,7 +45,7 @@ changements d'iOS 27 par MacRumors (10 juin 2026).
   qui ouvre une **feuille flottante** (marges de 8 px, rayon de 40 px, concentrique avec
   les coins de l'écran).
 - La barre d'onglets reste visible sur la fiche recette ; seule une feuille la recouvre.
-- Barres d'outils (fiche, vérification d'un scan) : boutons ronds de 44 px en verre posés
+- Barres d'outils (fiche, formulaire) : boutons ronds de 44 px en verre posés
   sur le contenu, sans barre pleine. Le bouton de validation est teinté avec l'accent.
 
 **Règle d'usage** : le verre est réservé à la **couche de navigation** (barre d'onglets,
@@ -79,7 +79,7 @@ coûte en performance : maximum 3 ou 4 éléments en verre à l'écran.
 | `--color-text`, `-secondary`, `-tertiary`                                  | trois niveaux de texte, pas plus                             |
 | `--color-accent` (« basilic »), `--color-accent-soft`, `--color-on-accent` | actions, onglet actif, puces « Mon frigo », numéros d'étapes |
 | `--color-star`, `--color-star-empty`                                       | étoiles uniquement                                           |
-| `--color-warning`, `--color-warning-soft`                                  | lignes OCR à vérifier uniquement                             |
+| `--color-warning`, `--color-warning-soft`                                  | avertissements (inutilisé depuis l'abandon du scan)          |
 | `--color-danger`                                                           | « Se déconnecter », « Supprimer »                            |
 | `--color-overlay`                                                          | repli opaque du verre                                        |
 | `--color-scrim`                                                            | voile derrière une feuille                                   |
@@ -124,8 +124,6 @@ Police système (SF Pro sur iPhone), aucune police web à charger. Échelle :
   (`shipped: false`), quantités alignées à droite.
 - **Score « Mon frigo »** : « 6/8 » et barre fine de 48 px ; ligne « Manque : … » limitée
   à 3 noms puis « +N ».
-- **Ligne OCR à vérifier** : fond `--color-warning-soft`, caractère suspect souligné,
-  étiquette « À vérifier ».
 
 ## Mouvement
 

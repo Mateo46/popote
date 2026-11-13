@@ -101,31 +101,13 @@ App : relecture (formulaire) → enregistrement → copie des images du CDN Hell
 - **Échecs partiels** : une photo d'étape introuvable n'empêche pas l'enregistrement.
   L'étape reste sans photo.
 
-## Scan des feuillets (phase 7)
+## Scan des feuillets (phase 7, abandonné)
 
-```
-Photos (recto, verso) → preprocess (2400 px, gris, contraste) → Tesseract.js (Web Worker)
-  → texte + mots peu sûrs → parseOcr (domaine pur) → formulaire « Vérifier »
-     ├─ « Chercher sur HelloFresh » : ouvre la recherche du site avec le titre reconnu
-     └─ « Coller le lien » : import par lien (phase 6), photos du feuillet conservées
-```
-
-- **Auto-hébergé** : `scripts/copy-ocr-assets.mjs` copie dans `public/ocr/` (non versionné)
-  le worker, les variantes LSTM du moteur WebAssembly et le modèle français « best_int ».
-  Aucune image ne quitte l'appareil. Le service worker ne les précharge pas (≈ 4,5 Mo) mais
-  les garde en cache au premier scan (`runtimeCaching` dans `vite.config.ts`).
-- **Chargement à la demande** : `import('tesseract.js')` uniquement quand on lance une
-  lecture ; démarrage borné à 60 s et annulable.
-- **Analyse** (`src/domain/parseOcr.ts`) : sections repérées par leurs intitulés
-  (« Ingrédients », « À ajouter vous-même », « Valeurs nutritionnelles », « Allergènes »),
-  colonnes par nombre de personnes (on garde celle de 2), étapes numérotées. Corrections
-  automatiques des confusions fréquentes (« 1OO » → 100, « 1% » → 1½). Les lignes douteuses
-  sont signalées « À vérifier » dans le formulaire ; le texte brut reste consultable.
-- **Photos du feuillet** : enregistrées avec la recette (`kind = 'scan'`), jamais choisies
-  comme couverture automatiquement.
-- **Réglage** : déposer des photos de vrais feuillets dans `scans-test/` (non versionné),
-  ajouter le texte OCR obtenu en cas de test dans `parseOcr.test.ts`, puis ajuster les
-  règles.
+Construit puis retiré le 13/11/2026 à la demande du propriétaire : la lecture des
+feuillets par OCR gratuit (Tesseract.js, sur l'appareil) était rapide mais pas assez
+fiable. Le dernier état du code est dans l'historique git (commit `c60f0fe` : écran de
+scan, `parseOcr.ts`, copie des fichiers OCR au build). La valeur `scan` reste autorisée en
+base pour `recipes.source` et `recipe_photos.kind` (aucune migration utile).
 
 ## Écarts au plan initial
 
@@ -216,7 +198,7 @@ fonctionne normalement. `robots.txt` interdit aussi cette page aux robots.
    télécharge la page (en suivant les redirections, hôte `www.hellofresh.fr` uniquement),
    extrait les données (`__NEXT_DATA__`, puis JSON-LD en repli) et renvoie un brouillon
    validé par Zod. Une seule requête par import, déclenchée par l'utilisateur.
-2. **« Retrouver cette recette sur HelloFresh » après un scan : retenu sous forme
+2. _(Caduc depuis l'abandon du scan en phase 7.)_ **« Retrouver cette recette sur HelloFresh » après un scan : retenu sous forme
    simplifiée.** Pas de recherche automatique (API privée, interdite aux robots). L'app
    ouvre dans Safari `https://www.hellofresh.fr/recipes/search?q=<titre reconnu>` ;
    l'utilisateur choisit la bonne recette, copie le lien et le colle dans l'app (bouton

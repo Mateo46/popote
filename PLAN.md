@@ -25,8 +25,8 @@ décisions, ne pas ajouter de fonctionnalités hors périmètre.
 Application web installable sur iPhone (PWA) pour un couple, en français, qui permet de :
 
 - enregistrer les recettes HelloFresh (site français `www.hellofresh.fr`), environ 100 au
-  départ, par **import depuis le site** ou par **scan du feuillet papier** (OCR gratuit,
-  exécuté sur le téléphone) ;
+  départ, par **import depuis le site** (lien) ou par saisie manuelle. Le scan du feuillet
+  papier a été essayé puis abandonné (voir phase 7) ;
 - les retrouver : recherche par mot-clé, par ingrédient, filtres, et mode **« Mon frigo »**
   (on indique ce qu'on a, l'app classe les recettes par correspondance) ;
 - les noter de 0 à 5 par **demi-étoiles**, avec un **commentaire** ; note et commentaire
@@ -43,20 +43,19 @@ personnalisés, multilingue, notes séparées par utilisateur, écriture hors li
 
 ## 2. Choix techniques
 
-| Sujet             | Choix                                                         | Pourquoi                                                                    |
-| ----------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Runtime / outils  | Node.js LTS active, npm                                       | Standard, rien à installer d'exotique                                       |
-| Front             | React + TypeScript (mode `strict`) + Vite                     | Écosystème le plus répandu, facile à reprendre                              |
-| Routage           | React Router                                                  | Standard                                                                    |
-| Données distantes | TanStack Query                                                | Cache, rechargement, persistance hors ligne en lecture                      |
-| Validation        | Zod                                                           | Un seul schéma pour les types et la validation des imports                  |
-| Styles            | CSS Modules + variables CSS (design tokens)                   | Aucune dépendance, pas de bibliothèque de composants au rendu générique     |
-| PWA               | `vite-plugin-pwa` (Workbox)                                   | Coquille hors ligne, cache des images                                       |
-| Backend           | Supabase : Postgres, Auth, Storage, Edge Functions            | Gratuit à cette échelle, synchronisation entre deux téléphones, SQL lisible |
-| OCR               | Tesseract.js, modèle `fra`, fichiers auto-hébergés avec l'app | Gratuit, tourne dans le navigateur, aucune image envoyée à un tiers         |
-| Tests             | Vitest (logique métier), Playwright (2–3 parcours)            |                                                                             |
-| Qualité           | ESLint + Prettier, CI GitHub Actions                          |                                                                             |
-| Hébergement       | GitHub Pages, déployé par GitHub Actions                      | Gratuit, HTTPS (requis pour PWA et appareil photo)                          |
+| Sujet             | Choix                                              | Pourquoi                                                                    |
+| ----------------- | -------------------------------------------------- | --------------------------------------------------------------------------- |
+| Runtime / outils  | Node.js LTS active, npm                            | Standard, rien à installer d'exotique                                       |
+| Front             | React + TypeScript (mode `strict`) + Vite          | Écosystème le plus répandu, facile à reprendre                              |
+| Routage           | React Router                                       | Standard                                                                    |
+| Données distantes | TanStack Query                                     | Cache, rechargement, persistance hors ligne en lecture                      |
+| Validation        | Zod                                                | Un seul schéma pour les types et la validation des imports                  |
+| Styles            | CSS Modules + variables CSS (design tokens)        | Aucune dépendance, pas de bibliothèque de composants au rendu générique     |
+| PWA               | `vite-plugin-pwa` (Workbox)                        | Coquille hors ligne, cache des images                                       |
+| Backend           | Supabase : Postgres, Auth, Storage, Edge Functions | Gratuit à cette échelle, synchronisation entre deux téléphones, SQL lisible |
+| Tests             | Vitest (logique métier), Playwright (2–3 parcours) |                                                                             |
+| Qualité           | ESLint + Prettier, CI GitHub Actions               |                                                                             |
+| Hébergement       | GitHub Pages, déployé par GitHub Actions           | Gratuit, HTTPS (requis pour PWA et appareil photo)                          |
 
 Contraintes connues à respecter :
 
@@ -92,11 +91,10 @@ Contraintes connues à respecter :
 │  │  ├─ recipe.ts         types + schémas Zod
 │  │  ├─ normalize.ts      normalisation des noms d'ingrédients
 │  │  ├─ search.ts         recherche et filtres
-│  │  ├─ pantryMatch.ts    score « Mon frigo »
-│  │  └─ parseOcr.ts       texte OCR -> brouillon de recette
+│  │  └─ pantryMatch.ts    score « Mon frigo »
 │  ├─ data/                accès Supabase (une fonction par opération) + hooks Query
 │  ├─ features/            un dossier par écran : recipes, recipe-detail, pantry,
-│  │                       add-recipe (scan, lien, manuel), settings, auth
+│  │                       add-recipe (lien, manuel), settings, auth
 │  ├─ ui/                  composants génériques : Button, StarRating, Sheet, TabBar…
 │  ├─ styles/              tokens.css (clair/sombre), reset.css
 │  └─ main.tsx, App.tsx, router.tsx
@@ -184,20 +182,13 @@ ligne affiche « 6/8 » et la liste de ce qui manque. La correspondance utilise 
 normalisé (minuscules, sans accents, singulier simple, sans quantités ni qualificatifs
 comme « frais » ou « haché », plus une petite table de synonymes dans `normalize.ts`).
 
-**Ajouter** — trois entrées :
+**Ajouter** — deux entrées (le scan, prévu à l'origine, a été abandonné en phase 7) :
 
 1. _Depuis HelloFresh_ : coller un lien de recette `hellofresh.fr` → brouillon pré-rempli.
-2. _Scanner un feuillet_ : une ou deux photos (recto/verso) → OCR sur l'appareil →
-   brouillon. Si la phase 1 l'a validé, proposer d'abord « Retrouver cette recette sur
-   HelloFresh » à partir du titre reconnu, ce qui donne un résultat bien plus propre que
-   l'OCR complet. La photo du feuillet est conservée (`kind = 'scan'`).
-3. _Saisie manuelle_.
+2. _Saisie manuelle_.
 
-Dans les trois cas on arrive sur le **même écran de relecture** (formulaire d'édition) avant
-enregistrement. L'OCR gratuit fait des erreurs, surtout sur les mises en page en colonnes :
-l'écran de relecture doit rendre la correction rapide (une ligne par ingrédient, un
-paragraphe par étape, texte OCR brut consultable à côté). Détecter les doublons par
-`source_url` ou titre identique.
+Dans les deux cas on arrive sur le **même formulaire** avant enregistrement. Détecter les
+doublons par `source_url` ou identifiant HelloFresh.
 
 **Réglages** — thème (Système / Clair / Sombre, « Système » par défaut), liste des basiques,
 export de toutes les données en JSON, déconnexion, version de l'app.
@@ -340,12 +331,12 @@ sur des pages enregistrées en fixtures.
 
 ### Phase 7 — Scan du feuillet
 
-🟡 **Livrée le 12/11/2026, à régler sur de vrais feuillets.** Tesseract.js 7 auto-hébergé
-(moteur LSTM + modèle `fra` compact, ~4,5 Mo, chargés au premier scan puis en cache),
-prétraitement, progression, annulation, délai maximal au démarrage. `parseOcr.ts` testé
-sur des textes OCR de synthèse. Vérifié dans le navigateur sur une fiche générée :
-lecture en ~4 s, relecture pré-remplie, aucun recours à un CDN. **Reste** : mesurer temps
-et taux de correction sur de vrais feuillets, sur iPhone, et ajuster les règles.
+❌ **Abandonnée le 13/11/2026, à la demande du propriétaire.** Le scan a été construit et
+testé (Tesseract.js auto-hébergé, lecture en quelques secondes sur iPhone), mais la lecture
+des feuillets n'était pas assez fiable pour être utile. Le code a été retiré pour ne pas
+alourdir l'app ; son dernier état reste dans l'historique git (commit `c60f0fe`). L'ajout
+d'une recette se fait par lien HelloFresh ou saisie manuelle. Le texte ci-dessous est le
+plan d'origine, conservé pour mémoire.
 
 - Tesseract.js chargé à la demande (jamais au démarrage), modèle `fra` servi par l'app et
   mis en cache ; prétraitement de l'image (redimensionnement, niveaux de gris, contraste) ;

@@ -13,14 +13,12 @@ import {
 } from '../../data/hooks';
 import type { ImportedRecipe } from '../../data/importHellofresh';
 import type { Recipe } from '../../domain/recipe';
-import type { ScanResult } from '../scan/ScanPage';
 import { strings } from '../../strings';
 import { GlassButton } from '../../ui/GlassButton';
 import { SegmentedControl } from '../../ui/SegmentedControl';
 import {
   draftFromImport,
   draftFromRecipe,
-  draftFromScan,
   draftToInput,
   newKey,
   emptyDraft,
@@ -32,7 +30,6 @@ import {
   type StepDraft,
 } from './draft';
 import { PhotoPicker, type PendingPhoto } from './PhotoPicker';
-import { ScanBanner } from './ScanBanner';
 import styles from './RecipeFormPage.module.css';
 
 const difficultyOptions = [
@@ -51,33 +48,22 @@ export function EditRecipePage() {
   return <RecipeForm recipe={recipe} />;
 }
 
-/** État de navigation reçu par l'écran de création (relecture d'un import ou d'un scan). */
-interface NewRecipeState {
-  imported?: ImportedRecipe;
-  scanned?: ScanResult;
-  /** Photos du feuillet, conservées quand on passe d'un scan à l'import par lien. */
-  scanFiles?: File[];
-}
-
 /**
- * Écran de création. Après un import HelloFresh ou un scan, les données arrivent dans
- * l'état de navigation : le formulaire sert alors d'écran de relecture. La clé force
- * une réinitialisation quand on passe du scan à l'import par lien.
+ * Écran de création. Après un import HelloFresh, la recette importée arrive dans l'état
+ * de navigation (`state.imported`) : le formulaire sert alors d'écran de relecture.
  */
 export function NewRecipePage() {
   const location = useLocation();
-  const state = (location.state as NewRecipeState | null) ?? {};
-  return <RecipeForm key={location.key} {...state} />;
+  const imported = (location.state as { imported?: ImportedRecipe } | null)?.imported;
+  return <RecipeForm key={location.key} imported={imported} />;
 }
 
-interface RecipeFormProps extends NewRecipeState {
+interface RecipeFormProps {
   recipe?: Recipe;
+  imported?: ImportedRecipe | undefined;
 }
 
-const scanPhotos = (files: File[] = []): PendingPhoto[] =>
-  files.map((file) => ({ key: newKey(), source: file, kind: 'scan' }));
-
-function RecipeForm({ recipe, imported, scanned, scanFiles }: RecipeFormProps) {
+function RecipeForm({ recipe, imported }: RecipeFormProps) {
   const navigate = useNavigate();
   const create = useCreateRecipe();
   const update = useUpdateRecipe();
@@ -87,17 +73,10 @@ function RecipeForm({ recipe, imported, scanned, scanFiles }: RecipeFormProps) {
     if (recipe) return { draft: draftFromRecipe(recipe), meta: recipe, photos: [] };
     if (imported) {
       const { draft, meta } = draftFromImport(imported);
-      const photos: PendingPhoto[] = [
-        ...(imported.coverImageUrl
-          ? [{ key: newKey(), source: imported.coverImageUrl, kind: 'source' as const }]
-          : []),
-        ...scanPhotos(scanFiles),
-      ];
+      const photos: PendingPhoto[] = imported.coverImageUrl
+        ? [{ key: newKey(), source: imported.coverImageUrl, kind: 'source' }]
+        : [];
       return { draft, meta, photos };
-    }
-    if (scanned) {
-      const { draft, meta } = draftFromScan(scanned.parsed);
-      return { draft, meta, photos: scanPhotos(scanned.files) };
     }
     return { draft: emptyDraft(), meta: undefined, photos: [] };
   });
@@ -106,18 +85,14 @@ function RecipeForm({ recipe, imported, scanned, scanFiles }: RecipeFormProps) {
   const [errors, setErrors] = useState<string[]>([]);
   const saving = create.isPending || update.isPending || upload.isPending || copySteps.isPending;
   const serverError = create.error ?? update.error;
-  const suspiciousCount = draft.ingredients.filter((row) => row.suspicious).length;
 
   const set = <K extends keyof RecipeDraft>(key: K, value: RecipeDraft[K]) =>
     setDraft((current) => ({ ...current, [key]: value }));
 
-  /** Modifier une ligne la considère comme vérifiée (le signalement OCR disparaît). */
   function updateIngredient(key: string, patch: Partial<IngredientDraft>) {
     set(
       'ingredients',
-      draft.ingredients.map((row) =>
-        row.key === key ? { ...row, ...patch, suspicious: false } : row,
-      ),
+      draft.ingredients.map((row) => (row.key === key ? { ...row, ...patch } : row)),
     );
   }
 
@@ -186,7 +161,7 @@ function RecipeForm({ recipe, imported, scanned, scanFiles }: RecipeFormProps) {
         <h1 className={styles.heading}>
           {recipe
             ? strings.form.editTitle
-            : imported || scanned
+            : imported
               ? strings.form.reviewTitle
               : strings.form.newTitle}
         </h1>
@@ -204,8 +179,6 @@ function RecipeForm({ recipe, imported, scanned, scanFiles }: RecipeFormProps) {
           {strings.form.savingPhotos}
         </p>
       )}
-
-      {scanned && <ScanBanner title={scanned.parsed.title} scanFiles={scanned.files} />}
 
       {imported && (
         <p className={styles.reviewNote}>
@@ -234,11 +207,7 @@ function RecipeForm({ recipe, imported, scanned, scanFiles }: RecipeFormProps) {
         disabled={saving}
       />
       <p className={styles.hint}>
-        {recipe?.photos.length
-          ? strings.form.photosHintEdit
-          : photos.length > 0 && photos.every((photo) => photo.kind === 'scan')
-            ? strings.form.photosHintScan
-            : strings.form.photosHintNew}
+        {recipe?.photos.length ? strings.form.photosHintEdit : strings.form.photosHintNew}
       </p>
 
       <h2 className={styles.label}>{strings.form.general}</h2>
@@ -304,17 +273,10 @@ function RecipeForm({ recipe, imported, scanned, scanFiles }: RecipeFormProps) {
         />
       </div>
 
-      <h2 className={styles.label}>
-        {strings.form.ingredients}
-        {suspiciousCount > 0 && <em>{strings.review.toCheck(suspiciousCount)}</em>}
-      </h2>
+      <h2 className={styles.label}>{strings.form.ingredients}</h2>
       <div className={styles.group}>
         {draft.ingredients.map((row) => (
-          <div
-            key={row.key}
-            className={row.suspicious ? `${styles.ingredient} ${styles.warn}` : styles.ingredient}
-          >
-            {row.suspicious && <span className={styles.flag}>{strings.review.flag}</span>}
+          <div key={row.key} className={styles.ingredient}>
             <div className={styles.ingredientLine}>
               <input
                 aria-label={strings.form.ingredientName}
@@ -430,12 +392,6 @@ function RecipeForm({ recipe, imported, scanned, scanFiles }: RecipeFormProps) {
           </Field>
         ))}
       </div>
-      {scanned && (
-        <details className={styles.raw}>
-          <summary>{strings.review.rawText}</summary>
-          <pre>{scanned.rawText}</pre>
-        </details>
-      )}
     </form>
   );
 }

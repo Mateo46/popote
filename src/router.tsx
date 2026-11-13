@@ -10,7 +10,6 @@ import { PantryPage } from './features/pantry/PantryPage';
 import { RecipeDetailPage } from './features/recipe-detail/RecipeDetailPage';
 import { EditRecipePage, NewRecipePage } from './features/recipe-form/RecipeFormPage';
 import { RecipesPage } from './features/recipes/RecipesPage';
-import { ScanPage } from './features/scan/ScanPage';
 import { SearchPage } from './features/search/SearchPage';
 import { SettingsPage } from './features/settings/SettingsPage';
 import { StaplesPage } from './features/settings/StaplesPage';
@@ -25,7 +24,6 @@ export const router = createBrowserRouter(
       children: [
         { index: true, element: <RecipesPage /> },
         { path: 'recettes/nouvelle', element: <NewRecipePage /> },
-        { path: 'recettes/scanner', element: <ScanPage /> },
         { path: 'recettes/:id', element: <RecipeDetailPage /> },
         { path: 'recettes/:id/modifier', element: <EditRecipePage /> },
         { path: 'frigo', element: <PantryPage /> },
