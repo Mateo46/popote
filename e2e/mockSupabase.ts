@@ -80,6 +80,8 @@ export interface MockState {
 /** Installe les réponses simulées sur la page. */
 export async function mockSupabase(page: Page): Promise<MockState> {
   const state: MockState = { recipePatches: [] };
+  // Copie propre à chaque test : les modifications d'un test ne fuient pas dans un autre.
+  const rows = recipes.map((row) => ({ ...row }));
   const json = (body: unknown, status = 200) => ({
     status,
     contentType: 'application/json',
@@ -110,10 +112,16 @@ export async function mockSupabase(page: Page): Promise<MockState> {
     const url = new URL(request.url());
     if (url.pathname.endsWith('/recipes')) {
       if (request.method() === 'PATCH') {
-        state.recipePatches.push(request.postDataJSON());
+        // Comme Supabase : la modification est appliquée, et le rechargement qui suit
+        // renvoie la recette à jour.
+        const patch = request.postDataJSON() as Record<string, unknown>;
+        state.recipePatches.push(patch);
+        const id = url.searchParams.get('id')?.replace(/^eq\./, '');
+        const index = rows.findIndex((row) => row.id === id);
+        if (index >= 0) rows[index] = { ...rows[index], ...patch } as (typeof rows)[number];
         return route.fulfill({ status: 204 });
       }
-      return route.fulfill(json(recipes));
+      return route.fulfill(json(rows));
     }
     // Frigo et basiques : vides.
     return route.fulfill(json([]));
