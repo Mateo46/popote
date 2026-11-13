@@ -41,6 +41,7 @@ const recipe: Recipe = {
 };
 
 const setRating = vi.fn();
+const addCookEntry = vi.fn();
 const mutation = (mutate = vi.fn()) => ({ mutate, isPending: false, isError: false, error: null });
 
 vi.mock('../../data/hooks', () => ({
@@ -49,7 +50,7 @@ vi.mock('../../data/hooks', () => ({
   useDeleteRecipe: () => mutation(),
   useSetRating: () => mutation(setRating),
   useSetComment: () => mutation(),
-  useAddCookEntry: () => mutation(),
+  useAddCookEntry: () => mutation(addCookEntry),
   useDeleteCookEntry: () => mutation(),
   useUploadPhotos: () => mutation(),
   useSetCover: () => mutation(),
@@ -66,7 +67,10 @@ function renderPage() {
   );
 }
 
-beforeEach(() => setRating.mockClear());
+beforeEach(() => {
+  setRating.mockClear();
+  addCookEntry.mockClear();
+});
 
 describe('RecipeDetailPage', () => {
   it('affiche les chiffres clés, la note et le commentaire', () => {
@@ -104,5 +108,35 @@ describe('RecipeDetailPage', () => {
       'href',
       recipe.sourceUrl,
     );
+  });
+});
+
+describe('historique « cuisinée le… »', () => {
+  /** Simule le choix d'une date dans le sélecteur natif (événement « change »). */
+  function pickDate(value: string) {
+    const input = screen.getByLabelText('Ajouter une autre date à l’historique');
+    fireEvent.change(input, { target: { value } });
+  }
+
+  it('ajoute une date passée choisie dans le calendrier', () => {
+    renderPage();
+    pickDate('2026-11-01');
+    expect(addCookEntry).toHaveBeenCalledWith({ recipeId: 'r1', cookedOn: '2026-11-01' });
+  });
+
+  it('refuse une date future', () => {
+    renderPage();
+    pickDate('2099-01-01');
+    expect(addCookEntry).not.toHaveBeenCalled();
+    expect(screen.getByText('Choisissez une date passée.')).toBeInTheDocument();
+  });
+
+  it('n’ajoute pas deux fois la même date', () => {
+    renderPage();
+    pickDate('2026-10-18');
+    expect(addCookEntry).not.toHaveBeenCalled();
+    expect(
+      screen.getByText(/Dimanche 18 octobre 2026 est déjà dans l’historique/),
+    ).toBeInTheDocument();
   });
 });

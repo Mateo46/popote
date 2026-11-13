@@ -181,8 +181,51 @@
 
 .cooked {
   display: flex;
-  gap: var(--space-3);
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
   align-items: center;
+}
+
+/* Bouton « Autre date » : le champ date natif, invisible, le recouvre entièrement. */
+.otherDate {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--tap-min);
+  padding: 0 16px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font: var(--text-headline);
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.otherDate input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  /* iOS n'ouvre pas le sélecteur sur un champ trop petit : il garde la taille du bouton. */
+  font-size: 16px;
+}
+
+.otherDate[aria-disabled='true'] {
+  opacity: 0.5;
+}
+
+.otherDate:focus-within {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Le résumé (nombre de fois, dernière date) passe sous les boutons. */
+.cooked p {
+  flex-basis: 100%;
 }
 
 .cooked p {

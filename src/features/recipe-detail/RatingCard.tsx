@@ -1,10 +1,10 @@
 /**
  * Bloc « Notre note » : étoiles (enregistrées dès le toucher), commentaire commun,
- * et bouton « Cuisinée aujourd'hui ».
+ * « Cuisinée aujourd'hui » et ajout d'une autre date (calendrier natif).
  */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useAddCookEntry, useSetComment, useSetRating } from '../../data/hooks';
-import { formatRating, formatShortDate, toLocalIsoDate } from '../../domain/format';
+import { formatLongDate, formatRating, formatShortDate, toLocalIsoDate } from '../../domain/format';
 import type { Recipe } from '../../domain/recipe';
 import { strings } from '../../strings';
 import { Button } from '../../ui/Button';
@@ -20,7 +20,38 @@ export function RatingCard({ recipe }: { recipe: Recipe }) {
   const [draft, setDraft] = useState('');
 
   const today = toLocalIsoDate(new Date());
-  const cookedToday = recipe.cookLog[0]?.cookedOn === today;
+  const cookedOn = new Set(recipe.cookLog.map((entry) => entry.cookedOn));
+  const cookedToday = cookedOn.has(today);
+  const [dateMessage, setDateMessage] = useState<string | null>(null);
+
+  /** Ajoute une date choisie dans le calendrier (jamais dans le futur, jamais en double). */
+  function addDate(value: string) {
+    if (!value) return;
+    if (value > today) {
+      setDateMessage(strings.detail.cookedFuture);
+      return;
+    }
+    if (cookedOn.has(value)) {
+      setDateMessage(strings.detail.cookedDuplicate(formatLongDate(value)));
+      return;
+    }
+    setDateMessage(null);
+    addCookEntry.mutate({ recipeId: recipe.id, cookedOn: value });
+  }
+  // Événement natif « change » (et non `onChange` de React, qui suit chaque saisie) : sur
+  // iOS, il ne part qu'une fois la date validée dans le sélecteur.
+  const dateInput = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const input = dateInput.current;
+    if (!input) return;
+    const onChange = () => {
+      addDate(input.value);
+      input.value = '';
+    };
+    input.addEventListener('change', onChange);
+    return () => input.removeEventListener('change', onChange);
+  });
+
   const lastCooked = recipe.cookLog[0]?.cookedOn;
   const failed = setRating.isError || setComment.isError || addCookEntry.isError;
 
@@ -93,6 +124,20 @@ export function RatingCard({ recipe }: { recipe: Recipe }) {
           <Icon name="check" size={16} />
           {cookedToday ? strings.detail.cookedTodayDone : strings.detail.cookedToday}
         </Button>
+        {/* Le champ date est posé, invisible, sur le bouton : le toucher ouvre directement
+            le sélecteur de date natif d'iOS. */}
+        <label className={styles.otherDate} aria-disabled={addCookEntry.isPending}>
+          <Icon name="calendar" size={16} />
+          {strings.detail.cookedOtherDate}
+          <input
+            ref={dateInput}
+            id="cooked-date"
+            type="date"
+            max={today}
+            aria-label={strings.detail.cookedOtherDateLabel}
+            disabled={addCookEntry.isPending}
+          />
+        </label>
         <p>
           {lastCooked ? (
             <>
@@ -106,6 +151,11 @@ export function RatingCard({ recipe }: { recipe: Recipe }) {
         </p>
       </div>
 
+      {dateMessage && (
+        <p className={styles.error} role="alert">
+          {dateMessage}
+        </p>
+      )}
       {failed && (
         <p className={styles.error} role="alert">
           {strings.detail.actionError}

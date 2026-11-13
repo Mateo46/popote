@@ -60,6 +60,12 @@ const paths = {
       <path d="M10.5 11v5M13.5 11v5" />
     </>
   ),
+  calendar: (
+    <>
+      <rect x="4" y="5.5" width="16" height="14" rx="2" />
+      <path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" />
+    </>
+  ),
   paste: (
     <>
       <rect x="6" y="5" width="12" height="15" rx="2" />
